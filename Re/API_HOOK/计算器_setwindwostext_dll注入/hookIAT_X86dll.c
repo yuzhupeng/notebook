@@ -1,3 +1,4 @@
+#include "pch.h"
 #include <stdio.h>
 #include <wchar.h>
 #include <windows.h>
@@ -52,8 +53,18 @@ BOOL WINAPI lp_new_SetWindowTextW(HWND hWnd, WCHAR* lpString)
 }
 
 
-// hook_IAT  这里用东西一些固定的寻址方式寻找x86的IAT
-BOOL hook_IAT(char* sz_user32Dll, PROC pfnOrg, PROC pfnNew)
+// hook_IAT_x86  这里用东西一些固定的寻址方式寻找x86的IAT
+/*
+* 函数名字: hook_IAT_x86
+* 函数参数:
+* 参数1: 要hook的那个dll的a版字符串名字
+* 参数2: 那个函数原来的地址(jmp地址)
+* 参数3: 那个函数要被最终替换的地址(jmp地址)
+* 
+* 函数功能: 也就替换IAT[index]=我们的地址
+*/
+
+BOOL hook_IAT_x86(char* sz_user32Dll, PROC pfnOrg, PROC pfnNew)
 {
     HMODULE hMod;
     LPCSTR szDllname;
@@ -71,13 +82,14 @@ BOOL hook_IAT(char* sz_user32Dll, PROC pfnOrg, PROC pfnNew)
     for (; pImportDesc->Name; pImportDesc++)
     {
         szDllname = (LPCSTR)((DWORD)hMod + pImportDesc->Name);
-        if (!_stricmp(szDllname, sz_user32Dll))
+        if (!_stricmp(szDllname, sz_user32Dll))//对已有有的dll进行遍历,寻找目标dll
         {
-            pThunk = (PIMAGE_THUNK_DATA)((DWORD)hMod +pImportDesc->FirstThunk);
-            for (; pThunk->u1.Function; pThunk++)//其实没必要这么写..别人是一个联合体..
+            pThunk = (PIMAGE_THUNK_DATA)((DWORD)hMod +pImportDesc->FirstThunk);//寻找目标dll的IAT表
+            for (; pThunk->u1.Function; pThunk++)//其实没必要这么写..别人是一个联合体..遍历IAT表
             {
                 if (pThunk->u1.Function == (DWORD)pfnOrg)
                 {
+                    //匹配成功,修改IAT表
                     VirtualProtect((LPVOID)&pThunk->u1.Function,4,PAGE_EXECUTE_READWRITE,&dwOldProtect);
                     pThunk->u1.Function = (DWORD)pfnNew;
                     VirtualProtect((LPVOID)&pThunk->u1.Function,4,dwOldProtect,&dwOldProtect);
@@ -98,12 +110,12 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
         //动态的去修改iat 挂钩
     case DLL_PROCESS_ATTACH:
         lp_org_SetWindowTextW = GetProcAddress(GetModuleHandleA("user32.dll"),"SetWindowTextW");
-        hook_IAT("user32.dll", lp_org_SetWindowTextW, (PROC)lp_new_SetWindowTextW);
+        hook_IAT_x86("user32.dll", lp_org_SetWindowTextW, (PROC)lp_new_SetWindowTextW);
         break;
 
         //动态的去修改iat 脱钩
     case DLL_PROCESS_DETACH:
-        hook_IAT("user32.dll", (PROC)lp_new_SetWindowTextW, lp_org_SetWindowTextW);
+        hook_IAT_x86("user32.dll", (PROC)lp_new_SetWindowTextW, lp_org_SetWindowTextW);
         break;
     case DLL_THREAD_ATTACH:
     case DLL_THREAD_DETACH:
