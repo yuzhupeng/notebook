@@ -14,11 +14,11 @@ static patch90(lp_start,plen)
     return;
 }
 
-static dw_jmp(FBin)//10
+static dw_jmp(FBin,start_add,end_addr)//10
 {
     auto x,asm_jmp,cnt_patch;
-    
-    for (x = FindBinary(MinEA(),SEARCH_DOWN,FBin);x != BADADDR;x = FindBinary(x,SEARCH_DOWN,FBin))
+
+    for (x = FindBinary(start_add,SEARCH_DOWN,FBin);x != BADADDR && x<end_addr ;x = FindBinary(x,SEARCH_DOWN,FBin))
     {
         //同一个起点,,遍历几次
         Message("%x\n",x);
@@ -46,11 +46,11 @@ static dw_jmp(FBin)//10
     }
 } 
 
-static w_jmp(FBin)//9
+static w_jmp(FBin,start_add,end_addr)//10
 {
     auto x,asm_jmp,cnt_patch;
-   
-    for (x = FindBinary(MinEA(),SEARCH_DOWN,FBin);x != BADADDR;x = FindBinary(x,SEARCH_DOWN,FBin))
+
+    for (x = FindBinary(start_add,SEARCH_DOWN,FBin);x != BADADDR && x<end_addr ;x = FindBinary(x,SEARCH_DOWN,FBin))
     {
         //同一个起点,,遍历几次
         Message("%x\n",x);
@@ -78,11 +78,11 @@ static w_jmp(FBin)//9
     }
 }
 
-static b_jmp(FBin)//7
+static b_jmp(FBin,start_add,end_addr)//10
 {
     auto x,asm_jmp,cnt_patch;
 
-    for (x = FindBinary(MinEA(),SEARCH_DOWN,FBin);x != BADADDR;x = FindBinary(x,SEARCH_DOWN,FBin))
+    for (x = FindBinary(start_add,SEARCH_DOWN,FBin);x != BADADDR && x<end_addr ;x = FindBinary(x,SEARCH_DOWN,FBin))
     {
         //同一个起点,,遍历几次
         Message("%x\n",x);
@@ -113,14 +113,15 @@ static main()
 {
     
     Message("|---- start ---- |\n");
+    auto start_addr= 0x10001000;
+    auto end_addr  = 0x1001d000;
 
-
-    b_jmp("F6 05");
-    b_jmp("80 3D");
-    w_jmp("66 F7 05");
-    w_jmp("66 81 3D");
-    dw_jmp("81 3D");
-    dw_jmp("F7 05");
+    b_jmp("F6 05",start_addr,end_addr);
+    b_jmp("80 3D",start_addr,end_addr);
+    w_jmp("66 F7 05",start_addr,end_addr);
+    w_jmp("66 81 3D",start_addr,end_addr);
+    dw_jmp("81 3D",start_addr,end_addr);
+    dw_jmp("F7 05",start_addr,end_addr);
     
     Message("|----  end  ---- |\n");
 }
