@@ -172,3 +172,62 @@ void _tmain( int argc, TCHAR *argv[] )
 含义：指示这个进程拥有可用的最高优先级。一个拥有实时优先级的进程的线程可以打断所有其他进程线程的执行，
 
 包括正在执行重要任务的系统进程。例如，一个执行时间稍长一点的实时进程可能导致磁盘缓存不足或鼠标反映迟钝。
+
+
+
+
+
+# 其它
+
+
+
+```c
+#define _CRT_SECURE_NO_WARNINGS
+#include <Windows.h>
+#include <stdio.h>
+ 
+int main() {
+    
+    STARTUPINFO si;
+    PROCESS_INFORMATION pi;
+    char  lpCommandLine[256];
+
+    ZeroMemory(&si, sizeof(STARTUPINFO));
+    ZeroMemory(&pi, sizeof(PROCESS_INFORMATION));
+    si.cb = sizeof(STARTUPINFO);
+    printf("Plz input process path\n");
+
+    memset(lpCommandLine, 0, 256);
+    scanf("%s", lpCommandLine);
+
+    // 设置参数来创建进程，将路径、命令行参数等传递给 lpCommandLine
+    if (CreateProcessA(NULL, lpCommandLine, NULL, NULL, FALSE, CREATE_SUSPENDED, NULL, NULL, &si, &pi))
+    {
+        // 进程创建成功，获取进程句柄和主线程句柄
+        HANDLE hProcess = pi.hProcess;
+        HANDLE hThread = pi.hThread;
+
+        // 执行进一步的操作...
+
+        // 挂起进程
+        if (SuspendThread(hThread) != (DWORD)-1)
+        {
+            // 进程已挂起
+             
+            // 执行进一步的操作...
+            MessageBoxA(0, "开始运行吗?", "(:", 0);
+
+            // 恢复进程的运行
+            ResumeThread(hThread);
+        }
+
+        // 关闭进程和线程句柄
+        CloseHandle(hProcess);
+        CloseHandle(hThread);
+    }
+
+
+    return 0;
+}
+```
+
