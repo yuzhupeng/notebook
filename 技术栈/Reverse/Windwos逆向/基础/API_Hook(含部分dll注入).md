@@ -1,0 +1,161 @@
+# API_Hook(含部分dll注入)
+
+基础的:
+
+[入门级键盘hook (SetWindowsHookEx)](API_Hook(%E5%90%AB%E9%83%A8%E5%88%86dll%E6%B3%A8%E5%85%A5)%20b81a8d48fb314c46a57ebb6f5509a02f/%E5%85%A5%E9%97%A8%E7%BA%A7%E9%94%AE%E7%9B%98hook%20(SetWindowsHookEx)%20580b1d75b5bb47c183193f6f5e600d0e.md)
+
+[记事本-WriteFile() API钩取](API_Hook(%E5%90%AB%E9%83%A8%E5%88%86dll%E6%B3%A8%E5%85%A5)%20b81a8d48fb314c46a57ebb6f5509a02f/%E8%AE%B0%E4%BA%8B%E6%9C%AC-WriteFile()%20API%E9%92%A9%E5%8F%96%200c1655d9c71b41038af96fd1a2ebd764.md)
+
+[计算器-SetWindwosText()-dll注入](API_Hook(%E5%90%AB%E9%83%A8%E5%88%86dll%E6%B3%A8%E5%85%A5)%20b81a8d48fb314c46a57ebb6f5509a02f/%E8%AE%A1%E7%AE%97%E5%99%A8-SetWindwosText()-dll%E6%B3%A8%E5%85%A5%2088ed00214c154a99a9369a8f2aa232d0.md)
+
+[记事本-NtQuerySystemInformation() 之 进程隐藏](API_Hook(%E5%90%AB%E9%83%A8%E5%88%86dll%E6%B3%A8%E5%85%A5)%20b81a8d48fb314c46a57ebb6f5509a02f/%E8%AE%B0%E4%BA%8B%E6%9C%AC-NtQuerySystemInformation()%20%E4%B9%8B%20%E8%BF%9B%E7%A8%8B%E9%9A%90%E8%97%8F%2074e4aa8d196b479ebf7f93c1ea144002.md)
+
+[记事本-NtResumeThread() 之 进程隐藏](API_Hook(%E5%90%AB%E9%83%A8%E5%88%86dll%E6%B3%A8%E5%85%A5)%20b81a8d48fb314c46a57ebb6f5509a02f/%E8%AE%B0%E4%BA%8B%E6%9C%AC-NtResumeThread()%20%E4%B9%8B%20%E8%BF%9B%E7%A8%8B%E9%9A%90%E8%97%8F%20e3d371b649a04fcdbbc4d19c9d971a32.md)
+
+[热补丁技术( 貌似过时了,但值得学习)](API_Hook(%E5%90%AB%E9%83%A8%E5%88%86dll%E6%B3%A8%E5%85%A5)%20b81a8d48fb314c46a57ebb6f5509a02f/%E7%83%AD%E8%A1%A5%E4%B8%81%E6%8A%80%E6%9C%AF(%20%E8%B2%8C%E4%BC%BC%E8%BF%87%E6%97%B6%E4%BA%86,%E4%BD%86%E5%80%BC%E5%BE%97%E5%AD%A6%E4%B9%A0)%20ad66c2b6b5064fa297f278ef8c89ee15.md)
+
+[InlineHook(和热补丁技术类似,之前已经用过了,只是没单独说出来)](API_Hook(%E5%90%AB%E9%83%A8%E5%88%86dll%E6%B3%A8%E5%85%A5)%20b81a8d48fb314c46a57ebb6f5509a02f/InlineHook(%E5%92%8C%E7%83%AD%E8%A1%A5%E4%B8%81%E6%8A%80%E6%9C%AF%E7%B1%BB%E4%BC%BC,%E4%B9%8B%E5%89%8D%E5%B7%B2%E7%BB%8F%E7%94%A8%E8%BF%87%E4%BA%86,%E5%8F%AA%E6%98%AF%E6%B2%A1%E5%8D%95%E7%8B%AC%E8%AF%B4%E5%87%BA%E6%9D%A5)%2069d723724e12460f81d175352eb19892.md)
+
+[**IAT Hook**](API_Hook(%E5%90%AB%E9%83%A8%E5%88%86dll%E6%B3%A8%E5%85%A5)%20b81a8d48fb314c46a57ebb6f5509a02f/IAT%20Hook%206e7402c3557145809ad1265b9dc2f2d2.md)
+
+[**EAT Hook**](API_Hook(%E5%90%AB%E9%83%A8%E5%88%86dll%E6%B3%A8%E5%85%A5)%20b81a8d48fb314c46a57ebb6f5509a02f/EAT%20Hook%20cfd804428e924d868643c9bb9fdf92f9.md)
+
+进阶的:
+
+[**IDT Hook(未完成)**](API_Hook(%E5%90%AB%E9%83%A8%E5%88%86dll%E6%B3%A8%E5%85%A5)%20b81a8d48fb314c46a57ebb6f5509a02f/IDT%20Hook(%E6%9C%AA%E5%AE%8C%E6%88%90)%20931ccde0eb484b4095c8295f1fbf2954.md)
+
+[**SSDT Hook、SSSDT Hook**](API_Hook(%E5%90%AB%E9%83%A8%E5%88%86dll%E6%B3%A8%E5%85%A5)%20b81a8d48fb314c46a57ebb6f5509a02f/SSDT%20Hook%E3%80%81SSSDT%20Hook%2039c58e334cff4cfc86a6d4986dc22135.md)
+
+[**StealthHook**](API_Hook(%E5%90%AB%E9%83%A8%E5%88%86dll%E6%B3%A8%E5%85%A5)%20b81a8d48fb314c46a57ebb6f5509a02f/StealthHook%2029df65f3fa9c41d98f193cf8e2c94805.md)
+
+![Untitled](API_Hook(%E5%90%AB%E9%83%A8%E5%88%86dll%E6%B3%A8%E5%85%A5)%20b81a8d48fb314c46a57ebb6f5509a02f/Untitled.png)
+
+假设 notepad.exe 要打开 c:\abc.txt 文件，首先在程序代码中调用 msvcrt!fopen() API ，然后引发一系列的 API 调用，如下：
+
+```c
+- msvcrt ! fopen()
+    kernel32 ! CreateFileW()
+        ntdll ! ZwCreateFile()
+            ntdll ! KiFastSystemCall()
+                SYSENTRY        // IA-32 Instruction
+                    ——> 进入内核模式
+```
+
+如上所示，使用常规系统资源的 API 会经由 kernel32.dll 与 ntdll.dll 不断向下调用，通过 SYSRNTRY 命令进入内核模式
+
+为了运行实际的应用程序代码，需要加载许多系统库（DLL）。
+
+所有进程都会默认加载 kernel32.dll库，kernel32.dll又会加载 ntdll.dll库。
+
+**注**某些特定的系统进程（如：smss.exe）
+
+不会加载 kernel32.dll库。
+
+此外， GUI 应用程序中，user32.dll 与 gdi32.dll 是必须库。
+
+通过 API 钩取技术可以实现对某些 Win32 API 调用过程的拦截，并获得相应的控制权限。使用 API 钩取技术的优势如下：
+
+- 在 API 调用前/后运行用户的“钩子”代码。
+- 查看或操作传递给 API 的参数或 API 函数的返回时。
+- 取消对 API 的调用，或者更改执行流程，运行用户代码。
+
+下图是一张技术图标 （Tech Map），涵盖了 API 钩取得所有技术内容
+
+![Untitled](API_Hook(%E5%90%AB%E9%83%A8%E5%88%86dll%E6%B3%A8%E5%85%A5)%20b81a8d48fb314c46a57ebb6f5509a02f/Untitled%201.png)
+
+现在可能看不懂,不过无所谓,然后我们谈一下那张技术表
+
+# 勾取的 方法 和 对象
+
+首先时关于 API 钩取方法（Method）的分类，根据针对的对象（Object）不同，API 钩取方法大致可以分为静态方法与动态方法。
+
+静态方法针对的时 文件，
+
+而动态方法针对的是进程内存，
+
+一般 API 钩取技术指动态方法，当然在某些非常特殊的情况下也可以使用静态方法。
+
+![Untitled](API_Hook(%E5%90%AB%E9%83%A8%E5%88%86dll%E6%B3%A8%E5%85%A5)%20b81a8d48fb314c46a57ebb6f5509a02f/Untitled%202.png)
+
+**注**：静态方法在 API 勾取中并不常用。
+
+# 勾取的位置
+
+## exe导入表 IAT**表**
+
+IAT 将其内部的 API 地址更改为钩取函数的地址。
+
+该方法的优点是实现起来非常简单，缺点是无法勾取不在 IAT 而在程序用使用的 API
+
+如：动态加载并使用 DLL 时 
+
+## dll导出表 **EAT表**
+
+将记录在 DLL 的 EAT 中的 API 的起始地址更改为钩取函数地址，也可以实现 API 钩取。
+
+这种方法从概念上看非常简单，但在具体实现上不如前面的 Code 方法简单、强大，所以修改 EAT 的这种方法并不常用。
+
+## 代码(字节码)
+
+系统库（.dll）映射到进程内存时，
+
+从中查找 API 的实际地址，并直接修改代码。该方法应用非常广泛，具体实现中有如下几种选择：
+
+- 使用 JMP 指令修改起始代码；也就跳过
+- 覆写函数内部；重写函数整体
+- 仅修改必需部分的局部 重写函数局部
+
+# 实际技术
+
+![Untitled](API_Hook(%E5%90%AB%E9%83%A8%E5%88%86dll%E6%B3%A8%E5%85%A5)%20b81a8d48fb314c46a57ebb6f5509a02f/Untitled%203.png)
+
+技术图表中的这一栏是向目标进程内存设置钩取函数的具体技术，
+
+大致分为调试法与注入法两类：
+
+注入法又细分为
+
+- 代码注入
+- DLL注入
+
+## 调试法
+
+调试法通过调试目标进程钩取 API 。调试器拥有被挑事者（被调试进程）的所有权限（执行控制、内存访问等），
+
+所以可以向被调试进程的内存任意设置钩取函数。
+
+也就是说，在用户编写的程序中使用调试 API 附加到目标进程，然后（执行处于暂停状态）设置钩取函数。
+
+这样，重启运行是就能完全实现 API 钩取了
+
+## 注入法
+
+注入技术是一种向目标进程内存区域进行渗透的技术，
+
+根据注入对象的不同，可以细分为 DLL 注入与代码注入两种，
+
+其中 DLL 注入技术应用最为广泛
+
+- DLL 注入
+
+使用 DLL 注入技术可以驱使目标进程强制加载用户指定的 DLL 文件。
+
+使用该技术时，先在要注入的 DLL 中创建钩取代码与设置代码，
+
+然后在 DllMain()中调用设置代码，注入的同时即可完成 API 钩取。
+
+敲黑板: 注入的同时即可完成 API 钩取。
+
+- 代码注入
+
+代码注入技术比 DLL 注入技术更发达（更复杂），
+
+广泛应用于恶意代码（病毒、Shellcode等）
+
+代码注入比dll注入更加优秀
+
+# 可以去分析的项目
+
+通过搜索关键字 _SYSTEM_PROCESS_INFORMATION 看到的
+
+[https://github.com/kevoreilly/capemon](https://github.com/kevoreilly/capemon)

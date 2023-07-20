@@ -1,0 +1,18 @@
+# Python
+
+# 读取二进制文件,并按字节输出
+
+```c
+def read0x(fpath):
+    f=open(fpath, 'rb')
+    byte = f.read(1)
+    i=0
+    while byte:
+        print("0x"+(hex(ord(byte))[2:].zfill(2)),end=',')
+        byte = f.read(1)
+        if (i+1)%8==0:
+            print("")
+        i=i+1
+fpath=b'C:/Users/tinyx/Documents/WeChat Files/wxid_jpp1glc43b8o22/FileStorage/File/2023-06/ciphertext.txt'
+read0x(fpath)
+```
