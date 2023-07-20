@@ -1,0 +1,29 @@
+0x6C8A0000
+0x10000000
+FILE_readdir C:\Pr0gramData\Micr0s0ftSyncData
+0x6C8A3F710x6C8A58A00x6C8A139E0x6C8A3098
+FILE_readdir C:\Pr0gramData\Micr0s0ftSyncData\4z4sytf2
+0x6C8A3F710x6C8A52FE0x6C8A48680x6C8A15430x6C8A3098
+FILE_0pen C:\Pr0gramData\Micr0s0ftSyncData\4z4sytf2\4z4sytf2.exe
+0x6C8A19300x6C8A3098
+FILE_read C:\Pr0gramData\Micr0s0ftSyncData\4z4sytf2\4z4sytf2.exe
+0x6C8A19300x6C8A3098
+PR0C_exec C:\Pr0gramData\Micr0s0ftSyncData\4z4sytf2\4z4sytf2.exe
+0x6C8A19300x6C8A3098
+FILE_readdir C:\Pr0gramData\Micr0s0ftSyncData\jrir121a
+0x6C8A3F710x6C8A52FE0x6C8A48680x6C8A15430x6C8A3098
+FILE_readdir  C:\Pr0gramData\Micr0s0ftSyncData\jrir121a
+0x6C8A3F710x6C8A49950x6C8A15430x6C8A3098
+FILE_readdir C:\Pr0gramData\Micr0s0ftSyncData\pgrykqht
+0x6C8A3F710x6C8A52FE0x6C8A48680x6C8A15430x6C8A3098
+FILE_readdir C:\Pr0gramData\Micr0s0ftSyncData\pgrykqht
+0x6C8A3F710x6C8A49950x6C8A15430x6C8A3098
+FILE_readdir C:\Pr0gramData\Micr0s0ftSyncData\xc1i5rgl
+0x6C8A3F710x6C8A52FE0x6C8A48680x6C8A15430x6C8A3098
+FILE_0pen C:\Pr0gramData\Micr0s0ftSyncData\xc1i5rgl\xc1i5rgl.exe
+0x6C8A19300x6C8A3098
+FILE_read C:\Pr0gramData\Micr0s0ftSyncData\xc1i5rgl\xc1i5rgl.exe
+0x6C8A19300x6C8A3098
+PR0C_exec C:\Pr0gramData\Micr0s0ftSyncData\xc1i5rgl\xc1i5rgl.exe
+0x6C8A19300x6C8A3098
+EXEC_destr0y C:\Pr0gramData\Micr0s0ftSyncData\pgrykqht\pgrykqht.exe
