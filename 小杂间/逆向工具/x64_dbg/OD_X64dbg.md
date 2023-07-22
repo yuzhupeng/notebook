@@ -122,19 +122,19 @@ ctrl g 就可以输入API的名字
 
 ## 断点
 
-![Untitled](OD_X64dbg%20bdc897d48d6b414da175931333ae5a72/Untitled.png)
+![931d0ff4ce954241897aa0903d0d519eUntitled](img/931d0ff4ce954241897aa0903d0d519eUntitled.png)
 
 0xcc断点和硬件断点直接小白方式设置
 
 > 条件断点
 > 
 
-![Untitled](OD_X64dbg%20bdc897d48d6b414da175931333ae5a72/Untitled%201.png)
+![Untitled](./img/bdc897d48d6b414da175931333ae5a72Untitled1.png)
 
 > 内存断点
 > 
 
-![Untitled](OD_X64dbg%20bdc897d48d6b414da175931333ae5a72/Untitled%202.png)
+![Untitled](./img/bdc897d48d6b414da175931333ae5a72Untitled2.png)
 
 > 消息断点设置
 > 
@@ -147,9 +147,9 @@ ctrl g 就可以输入API的名字
 
 然后右键,选择消息断点
 
-![Untitled](OD_X64dbg%20bdc897d48d6b414da175931333ae5a72/Untitled%203.png)
+![Untitled](./img/bdc897d48d6b414da175931333ae5a72Untitled3.png)
 
-![Untitled](OD_X64dbg%20bdc897d48d6b414da175931333ae5a72/Untitled%204.png)
+![Untitled](./img/bdc897d48d6b414da175931333ae5a72Untitled4.png)
 
 ## cmd
 

@@ -2,35 +2,13 @@
 
 基础的:
 
-[入门级键盘hook (SetWindowsHookEx)](API_Hook(%E5%90%AB%E9%83%A8%E5%88%86dll%E6%B3%A8%E5%85%A5)%20b81a8d48fb314c46a57ebb6f5509a02f/%E5%85%A5%E9%97%A8%E7%BA%A7%E9%94%AE%E7%9B%98hook%20(SetWindowsHookEx)%20580b1d75b5bb47c183193f6f5e600d0e.md)
+![Untitled](b81a8d48fb314c46a57ebb6f5509a02fUntitled.png)
 
-[记事本-WriteFile() API钩取](API_Hook(%E5%90%AB%E9%83%A8%E5%88%86dll%E6%B3%A8%E5%85%A5)%20b81a8d48fb314c46a57ebb6f5509a02f/%E8%AE%B0%E4%BA%8B%E6%9C%AC-WriteFile()%20API%E9%92%A9%E5%8F%96%200c1655d9c71b41038af96fd1a2ebd764.md)
 
-[计算器-SetWindwosText()-dll注入](API_Hook(%E5%90%AB%E9%83%A8%E5%88%86dll%E6%B3%A8%E5%85%A5)%20b81a8d48fb314c46a57ebb6f5509a02f/%E8%AE%A1%E7%AE%97%E5%99%A8-SetWindwosText()-dll%E6%B3%A8%E5%85%A5%2088ed00214c154a99a9369a8f2aa232d0.md)
-
-[记事本-NtQuerySystemInformation() 之 进程隐藏](API_Hook(%E5%90%AB%E9%83%A8%E5%88%86dll%E6%B3%A8%E5%85%A5)%20b81a8d48fb314c46a57ebb6f5509a02f/%E8%AE%B0%E4%BA%8B%E6%9C%AC-NtQuerySystemInformation()%20%E4%B9%8B%20%E8%BF%9B%E7%A8%8B%E9%9A%90%E8%97%8F%2074e4aa8d196b479ebf7f93c1ea144002.md)
-
-[记事本-NtResumeThread() 之 进程隐藏](API_Hook(%E5%90%AB%E9%83%A8%E5%88%86dll%E6%B3%A8%E5%85%A5)%20b81a8d48fb314c46a57ebb6f5509a02f/%E8%AE%B0%E4%BA%8B%E6%9C%AC-NtResumeThread()%20%E4%B9%8B%20%E8%BF%9B%E7%A8%8B%E9%9A%90%E8%97%8F%20e3d371b649a04fcdbbc4d19c9d971a32.md)
-
-[热补丁技术( 貌似过时了,但值得学习)](API_Hook(%E5%90%AB%E9%83%A8%E5%88%86dll%E6%B3%A8%E5%85%A5)%20b81a8d48fb314c46a57ebb6f5509a02f/%E7%83%AD%E8%A1%A5%E4%B8%81%E6%8A%80%E6%9C%AF(%20%E8%B2%8C%E4%BC%BC%E8%BF%87%E6%97%B6%E4%BA%86,%E4%BD%86%E5%80%BC%E5%BE%97%E5%AD%A6%E4%B9%A0)%20ad66c2b6b5064fa297f278ef8c89ee15.md)
-
-[InlineHook(和热补丁技术类似,之前已经用过了,只是没单独说出来)](API_Hook(%E5%90%AB%E9%83%A8%E5%88%86dll%E6%B3%A8%E5%85%A5)%20b81a8d48fb314c46a57ebb6f5509a02f/InlineHook(%E5%92%8C%E7%83%AD%E8%A1%A5%E4%B8%81%E6%8A%80%E6%9C%AF%E7%B1%BB%E4%BC%BC,%E4%B9%8B%E5%89%8D%E5%B7%B2%E7%BB%8F%E7%94%A8%E8%BF%87%E4%BA%86,%E5%8F%AA%E6%98%AF%E6%B2%A1%E5%8D%95%E7%8B%AC%E8%AF%B4%E5%87%BA%E6%9D%A5)%2069d723724e12460f81d175352eb19892.md)
-
-[**IAT Hook**](API_Hook(%E5%90%AB%E9%83%A8%E5%88%86dll%E6%B3%A8%E5%85%A5)%20b81a8d48fb314c46a57ebb6f5509a02f/IAT%20Hook%206e7402c3557145809ad1265b9dc2f2d2.md)
-
-[**EAT Hook**](API_Hook(%E5%90%AB%E9%83%A8%E5%88%86dll%E6%B3%A8%E5%85%A5)%20b81a8d48fb314c46a57ebb6f5509a02f/EAT%20Hook%20cfd804428e924d868643c9bb9fdf92f9.md)
-
-进阶的:
-
-[**IDT Hook(未完成)**](API_Hook(%E5%90%AB%E9%83%A8%E5%88%86dll%E6%B3%A8%E5%85%A5)%20b81a8d48fb314c46a57ebb6f5509a02f/IDT%20Hook(%E6%9C%AA%E5%AE%8C%E6%88%90)%20931ccde0eb484b4095c8295f1fbf2954.md)
-
-[**SSDT Hook、SSSDT Hook**](API_Hook(%E5%90%AB%E9%83%A8%E5%88%86dll%E6%B3%A8%E5%85%A5)%20b81a8d48fb314c46a57ebb6f5509a02f/SSDT%20Hook%E3%80%81SSSDT%20Hook%2039c58e334cff4cfc86a6d4986dc22135.md)
-
-[**StealthHook**](API_Hook(%E5%90%AB%E9%83%A8%E5%88%86dll%E6%B3%A8%E5%85%A5)%20b81a8d48fb314c46a57ebb6f5509a02f/StealthHook%2029df65f3fa9c41d98f193cf8e2c94805.md)
-
-![Untitled](API_Hook(%E5%90%AB%E9%83%A8%E5%88%86dll%E6%B3%A8%E5%85%A5)%20b81a8d48fb314c46a57ebb6f5509a02f/Untitled.png)
 
 假设 notepad.exe 要打开 c:\abc.txt 文件，首先在程序代码中调用 msvcrt!fopen() API ，然后引发一系列的 API 调用，如下：
+
+
 
 ```c
 - msvcrt ! fopen()
@@ -40,6 +18,8 @@
                 SYSENTRY        // IA-32 Instruction
                     ——> 进入内核模式
 ```
+
+
 
 如上所示，使用常规系统资源的 API 会经由 kernel32.dll 与 ntdll.dll 不断向下调用，通过 SYSRNTRY 命令进入内核模式
 

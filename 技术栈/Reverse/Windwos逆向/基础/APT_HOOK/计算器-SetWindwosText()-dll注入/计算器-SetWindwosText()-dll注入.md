@@ -91,6 +91,8 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 
 在进程卸载的时候,],它对SetWindowTextW 做了以一个unohhk
 
+
+
 ## hook_IAT
 
 其实就是对exe的IAT表做一个手脚

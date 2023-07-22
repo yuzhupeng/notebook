@@ -1,12 +1,29 @@
 # 初衷
 
-<h1 align="center"> <a href="https://github.com/redqx/redqx.github.io/tree/d93b24c800844b2e4cbc6224f2cb5c9287bf0515/ReadMe"> <img src="https://readme-typing-svg.herokuapp.com/?lines=console.log(%22Hello%2C%20World!%22);香香同学祝您今天愉快!&center=true&size=27"> </a> </h1>
+<h1 align="center"> <a href="https://github.com/redqx/redqx.github.io/blob/06df3363bfa8bc57e8cf1548a1b87edc7c30d527/README/REAEME.md"> <img src="https://readme-typing-svg.herokuapp.com/?lines=console.log(%22redqx%22);香香同学祝您一路顺风!&center=true&size=27"> </a> </h1>
 
 用于记录平时写的代码或者 对一些代码理解
 
 因为我讨厌重复写相同功能的代码
 
 比如PE文件的一些东西,遇到又会去重新写,烦死了
+
+
+
+<picture>
+  <source
+    media="(prefers-color-scheme: dark)"
+    srcset="https://raw.githubusercontent.com/platane/snk/output/github-contribution-grid-snake-dark.svg"
+  />
+  <source
+    media="(prefers-color-scheme: light)"
+    srcset="https://raw.githubusercontent.com/platane/snk/output/github-contribution-grid-snake.svg"
+  />
+  <img
+    alt="github contribution grid snake animation"
+    src="https://raw.githubusercontent.com/platane/snk/output/github-contribution-grid-snake.svg"
+  />
+</picture>
 
 
 

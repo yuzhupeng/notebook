@@ -8,7 +8,7 @@
 
 如果出现异常,并且把异常交付给用户的处理程序,需要做一些过程的配置
 
-![Untitled](visual%20stdio%2027d33af6ca5244a095cb96384bc21234/Untitled.png)
+![Untitled](27d33af6ca5244a095cb96384bc21234Untitled.png)
 
 然后逐个浏览
 
@@ -17,7 +17,15 @@
 vs的调试器在遇到异常的时候,就把异常交付给用户自定义的处理程序
 而不是报错
 
-# 搭配x64的内联汇编环境
+# 搭配x64的内联汇编环境-way1
+
+有时候,TMD就是配置失败
+
+有时候又成功
+
+
+
+
 
 比如写了写了下面的汇编
 
@@ -72,15 +80,15 @@ int main()
 
 右键asm文件
 
-![Untitled](visual%20stdio%2027d33af6ca5244a095cb96384bc21234/Untitled%201.png)
+![Untitled](27d33af6ca5244a095cb96384bc21234Untitled1.png)
 
 然后
 
-![Untitled](visual%20stdio%2027d33af6ca5244a095cb96384bc21234/Untitled%202.png)
+![Untitled](27d33af6ca5244a095cb96384bc21234Untitled2.png)
 
 然后
 
-![Untitled](visual%20stdio%2027d33af6ca5244a095cb96384bc21234/Untitled%203.png)
+![Untitled](27d33af6ca5244a095cb96384bc21234Untitled3.png)
 
 ```c
 ml64 /c %(fileName).asm
@@ -108,24 +116,104 @@ ml64 /c %(fileName).asm
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ```
 
+
+
+# 搭配x64的内联汇编环境-way2
+
+https://zhuanlan.zhihu.com/p/270397861
+
+![image-20230721163350068](img/image-20230721163350068.png)
+
+然后选择并确定
+
+![image-20230721163414169](img/image-20230721163414169.png)
+
+右键asm文件属性
+
+![image-20230721163446906](img/image-20230721163446906.png)
+
+选择
+
+![image-20230721163512503](img/image-20230721163512503.png)
+
+
+
+然后就差不多了
+
+
+
+asm文件
+
+```assembly
+.CODE
+ 
+Int_3 PROC
+		MOV EAX, 1234  ;返回1234
+		RET
+Int_3 ENDP
+ 
+ 
+MY_TEST PROC
+		MOV EAX, 23 ;返回23
+		RET
+MY_TEST ENDP
+ 
+END
+```
+
+
+
+c文件
+
+```c
+#define  _CRT_SECURE_NO_WARNINGS
+#include <Windows.h>
+#include <stdio.h>
+//#include "head.h" 不用加
+
+extern "C"   int _stdcall Int_3();
+extern "C"   int _stdcall MY_TEST();
+int main()
+{
+	int x = Int_3();
+	int y = MY_TEST();
+	printf("%d", x + y);
+	return 0;
+}
+```
+
+
+
+
+
+
+
+# 搭配x64的内联汇编环境-way3
+
+https://www.cnblogs.com/jszyx/p/12808085.html
+
+https://blog.csdn.net/huxyc/article/details/106961556
+
+https://www.cnblogs.com/VxerLee/p/15185403.html
+
 # 编译设置
 
 关闭 j_@__CheckForDebuggerJustMyCode@4
 
-![Untitled](visual%20stdio%2027d33af6ca5244a095cb96384bc21234/Untitled%204.png)
+![Untitled](27d33af6ca5244a095cb96384bc21234Untitled4.png)
 
 关闭 j___RTC_CheckEsp无security_cooke检查
 
-![Untitled](visual%20stdio%2027d33af6ca5244a095cb96384bc21234/Untitled%205.png)
+![Untitled](27d33af6ca5244a095cb96384bc21234Untitled5.png)
 
 关闭 j___RTC_CheckEsp有security_cooke检查
 
-![Untitled](visual%20stdio%2027d33af6ca5244a095cb96384bc21234/Untitled%206.png)
+![Untitled](27d33af6ca5244a095cb96384bc21234Untitled6.png)
 
 关闭 关闭堆栈不可以执行
 
-![Untitled](visual%20stdio%2027d33af6ca5244a095cb96384bc21234/Untitled%207.png)
+![Untitled](27d33af6ca5244a095cb96384bc21234Untitled7.png)
 
 “ **pch”预编译头文件来自编译器的其他版本，或者预编译头为 C++ 而在 C 中使用它(或相反) and vs找不到路径**
 
-![Untitled](visual%20stdio%2027d33af6ca5244a095cb96384bc21234/Untitled%208.png)
+![Untitled](27d33af6ca5244a095cb96384bc21234Untitled8.png)

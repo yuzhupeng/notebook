@@ -311,3 +311,61 @@ int main() {
 
 
 
+# 把文件读取到内存
+
+
+
+
+
+```c
+BYTE* peFileMapping(CHAR* szFileName)
+{
+    HANDLE hFile;
+    DWORD dwFileSize, dwBytesRead;
+    BYTE* lpBuffer = NULL;
+
+    hFile = CreateFileA(szFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (hFile == INVALID_HANDLE_VALUE)
+    {
+        printf("Failed to open file, error code: %d\n", GetLastError());
+        return NULL;
+    }
+
+    dwFileSize = GetFileSize(hFile, NULL);
+    if (dwFileSize == INVALID_FILE_SIZE)
+    {
+        printf("Failed to get file size, error code: %d\n", GetLastError());
+        CloseHandle(hFile);
+        return NULL;
+    }
+
+    lpBuffer = GlobalAlloc(GMEM_FIXED, dwFileSize + 1024);
+    memset(lpBuffer, 0, dwFileSize + 1024);
+    if (lpBuffer == NULL)
+    {
+        printf("Failed to allocate memory for file content, error code: %d\n", GetLastError());
+        CloseHandle(hFile);
+        return NULL;
+    }
+
+    if (!ReadFile(hFile, lpBuffer, dwFileSize, &dwBytesRead, NULL))
+    {
+        printf("Failed to read file content, error code: %d\n", GetLastError());
+        GlobalFree(lpBuffer);
+        CloseHandle(hFile);
+        return NULL;
+    }
+
+    // Add NULL terminator at the end of the buffer
+    flen = dwBytesRead;
+    CloseHandle(hFile);
+    return lpBuffer;
+
+    //记得GlobalFree(lpBuffer);
+}
+```
+
+
+
+
+
