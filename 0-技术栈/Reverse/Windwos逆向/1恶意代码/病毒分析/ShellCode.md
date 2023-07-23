@@ -1,0 +1,5 @@
+# ShellCode
+
+[如何重定位](ShellCode%2043da4b2fbdb44d7fa0d4e323cd3044d0/%E5%A6%82%E4%BD%95%E9%87%8D%E5%AE%9A%E4%BD%8D%2029655c91bd664affb993fbd9f4957fc8.md)
+
+[动态函数的获取](ShellCode%2043da4b2fbdb44d7fa0d4e323cd3044d0/%E5%8A%A8%E6%80%81%E5%87%BD%E6%95%B0%E7%9A%84%E8%8E%B7%E5%8F%96%206d58e620ecf848fab69a088309affba7.md)

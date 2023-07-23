@@ -1,6 +1,10 @@
-# 初衷
 
-<h1 align="center"> <a href="https://github.com/redqx/redqx.github.io/blob/06df3363bfa8bc57e8cf1548a1b87edc7c30d527/README/REAEME.md"> <img src="https://readme-typing-svg.herokuapp.com/?lines=console.log(%22redqx%22);香香同学祝您一路顺风!&center=true&size=27"> </a> </h1>
+
+# 衡水笔记
+
+
+
+<h1 align="center"> <a href="https://github.com/redqx/redqx.github.io/blob/06df3363bfa8bc57e8cf1548a1b87edc7c30d527/README/REAEME.md"> <img src="https://readme-typing-svg.herokuapp.com/?lines= This Is A Notebook;点击我前往!&center=true&size=27"> </a> </h1>
 
 
 
