@@ -1,5 +1,26 @@
 
 
+APC有两中存在形式：
+
+1.  为系统和驱动生成的APC(内核APC)
+2.  为应用程序生成的APC(用户APC)
+
+
+
+```c
+  DWORD QueueUserAPC(
+  [in] PAPCFUNC  pfnAPC,//指向一个用户提供的APC函数的指针(当指定线程执行可告警的等待时，将调用指向应用程序提供的APC函数的指针)
+  [in] HANDLE    hThread,//线程的句柄。句柄必须有THREAD_SET_CONTEXT访问权限
+  [in] ULONG_PTR dwData//指定一个被传到pfnAPC参数指向的APC函数的值
+);
+```
+
+
+
+
+
+
+
 只有当一个线程
 
 内部调用`SleepEx`、`SignalObjectAdndWait`、`WaitForSingleObjectEx`、`WaitForMultioleObjectsEx` 等

@@ -1,12 +1,20 @@
-# 初衷
 
-<h1 align="center"> <a href="https://github.com/redqx/redqx.github.io/blob/06df3363bfa8bc57e8cf1548a1b87edc7c30d527/README/REAEME.md"> <img src="https://readme-typing-svg.herokuapp.com/?lines=console.log(%22redqx%22);香香同学祝您一路顺风!&center=true&size=27"> </a> </h1>
 
-用于记录平时写的代码或者 对一些代码理解
+# 衡水笔记
 
-因为我讨厌重复写相同功能的代码
 
-比如PE文件的一些东西,遇到又会去重新写,烦死了
+
+<h1 align="center"> <a href="https://github.com/redqx/redqx.github.io/blob/06df3363bfa8bc57e8cf1548a1b87edc7c30d527/README/REAEME.md"> <img src="https://readme-typing-svg.herokuapp.com/?lines= This Is A Notebook;点击我前往!&center=true&size=27"> </a> </h1>
+
+
+
+代码
+
+笔记
+
+资源文件
+
+
 
 
 
