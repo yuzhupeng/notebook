@@ -2,9 +2,11 @@
 
 # 衡水笔记
 
+ID: 香香 && D0g3.21.redqx
 
 
-<h1 align="center"> <a href="https://github.com/redqx/redqx.github.io/blob/06df3363bfa8bc57e8cf1548a1b87edc7c30d527/README/REAEME.md"> <img src="https://readme-typing-svg.herokuapp.com/?lines= This Is A Notebook;点击我前往!&center=true&size=27"> </a> </h1>
+
+<h1 align="center"> <a href="https://github.com/redqx/redqx.github.io/blob/master/README.md"> <img src="https://readme-typing-svg.herokuapp.com/?lines= 道之若极,行必有格;点击我前往wiki!&center=true&size=27"> </a> </h1>
 
 
 
