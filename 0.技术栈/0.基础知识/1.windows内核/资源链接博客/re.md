@@ -1,0 +1,118 @@
+
+
+[Vergilius Project](https://www.vergiliusproject.com/)
+
+可以看一下这些人的博客
+
+[t427 - 博客园](https://www.cnblogs.com/t427/)
+
+[忧郁的加菲猫 - 博客园](https://www.cnblogs.com/whiteyun/)
+
+
+
+>   参考链接
+
+[lzyddf](https://blog.csdn.net/qq_41988448/category_9429987_2.html) 码龄5年
+
+[oalken](https://blog.csdn.net/qq_18120361/category_10836381.html?spm=1001.2014.3001.5482) 码龄8年
+
+[《Windows内核分析》专题-索引目录](https://www.cnblogs.com/onetrainee/p/11675224.html)
+
+[Ibiantry](https://cloud.tencent.com/developer/article/1654532?areaSource=&traceId=)
+
+[qfrost](http://www.qfrost.com/WindowsKernel/Windows%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0_1/)
+
+
+
+>   待学习的链接
+
+还没有正式开始学习,但是也遇到了一些相关的链接,收藏一下
+
+[执行体线程--ETHREAD](https://blog.csdn.net/yourenhello/article/details/17226379?spm=1001.2101.3001.6650.10&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-10-17226379-blog-119733024.pc_relevant_recovery_v2&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-10-17226379-blog-119733024.pc_relevant_recovery_v2&utm_relevant_index=11)
+
+[进程防结束之PS_CROSS_THREAD_FLAGS_SYSTEM](https://blog.csdn.net/wzsy/article/details/43449811?spm=1001.2101.3001.6650.13&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-13-43449811-blog-119733024.pc_relevant_recovery_v2&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-13-43449811-blog-119733024.pc_relevant_recovery_v2&utm_relevant_index=14)
+
+[Crisczy](https://www.cnblogs.com/Crisczy/)
+
+[分析 INT 0x2E 和 sysenter](https://blog.csdn.net/Kwansy/article/details/109358719)
+
+[onetrainee的Windows编程](https://www.cnblogs.com/onetrainee/category/1562724.html)
+
+[onetrainee的Windows内核分析](https://www.cnblogs.com/onetrainee/category/1730642.html)
+
+[onetrainee的Windows驱动开发](https://www.cnblogs.com/onetrainee/category/1607647.html)
+
+[HITCON2022--ctf驱动逆向题](https://cloud.tencent.com/developer/article/2201541)
+
+
+
+
+
+系统内核工具
+
+ https://423down.lanzouv.com/b0f1oadze
+
+http://www.eydwl.cn/loudonganquan/273.html
+
+https://www.vergiliusproject.com/kernels 
+
+
+
+
+
+
+
+>   书单
+
+Windows内核原理与实现
+Windows内核情景分析
+WINDOWS驱动开发详解
+Windows 内核安全与驱动开发
+WIN64驱动编程基础教程 网上搜索这个PDF教程来入门64位驱动还是不错的
+寒江独钓：Windows内核安全编程
+Windows核心编程
+
+
+
+>   视频
+
+海哥中级上
+火哥驱动教程中级下看到异常和调试就可以了,(不做WG的话)自建调试和后面的都不用看.
+B站周壑的64位内核教程
+Windows驱动程序开发（基于多平台）视频课程 自己去网上搜有没有免费版本 我是150买的
+这个教程一共有4季 这一季基本讲的都是WINDOWS驱动开发详解上面的东西 也可以自己去看书
+麦洛克菲的驱动安全开发
+masm64老师的驱动开发
+驱动开发详解
+
+
+
+>   3环
+
+练习途径
+吾爱的pj板块
+ctf
+160个crackme
+
+
+
+>   书单
+
+
+
+160个crackme
+加密与解密4
+C++反汇编与逆向分析技术揭秘
+恶意代码分析实战
+逆向工程原理
+Oday安全:软件漏洞分析技术(第2版)
+漏洞战争
+
+
+
+>   视频
+
+滴水三期
+
+
+
