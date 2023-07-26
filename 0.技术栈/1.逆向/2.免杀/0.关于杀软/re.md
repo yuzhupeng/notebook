@@ -1,4 +1,4 @@
-# 道格安全研究实验室 出品
+
 
 # 什么是免杀
 
@@ -46,7 +46,19 @@ https://anhkgg.com/aanti-virus/
 
 
 
-# 查杀方式的基本框架 
+
+
+> 360:
+
+延迟查杀: 发现样本后,先不杀,哪怕你主动扫描它, 360会把它上传到云端分析,依据结果再对你进行查杀 
+
+
+
+# 传统的查杀
+
+
+
+## 查杀方式的基本框架 
 
 
 
@@ -110,7 +122,7 @@ https://anhkgg.com/aanti-virus/
 
 
 
-# 监测技术
+## 监测技术
 
 
 
@@ -185,7 +197,7 @@ VUE: 可以实现杀软的自动脱壳
 
 
 
-# 扫描技术
+## 扫描技术
 
 
 
@@ -208,6 +220,126 @@ VUE: 可以实现杀软的自动脱壳
 
 
 
+
+# 沙箱&&杀软引擎&&监测工具
+
+
+
+> 火绒HIPS引擎架构沙箱源码 
+
+https://github.com/huoji120/DuckSandboxDetect
+
+
+
+
+
+
+
+> 毕方智能云沙箱( ***Bold-Falcon*** )是一个开源的自动化恶意软件分析系统。
+
+它用于自动运行和分析文件，并收集全面的分析结果，概述恶意软件在独立操作系统中运行时所做的工作。
+
+**`说明文档`** https://powerlzy.github.io/Bold-Falcon/
+
+**`开发文档`** https://boldfalcon.readthedocs.io
+
+二次开发开源cuckoo沙箱，
+
+包括 **更新项目结构** ，**重写整个前端的用户交互**和 **添加基于机器学习的检测模块** ， 
+
+使恶意软件分析系统可以 **思考**
+
+下载源码
+
+```shell
+$ git clone https://github.com/PowerLZY/Bold-Falcon
+```
+
+```shell
+$ pip install Bold-Falcon
+```
+
+开源资料
+
+* [cuckoo](https://github.com/cuckoosandbox/cuckoo) Cuckoo Sandbox is an automated dynamic malware analysis system
+* [cuckoo-modified](https://github.com/spender-sandbox/cuckoo-modified) Modified edition of cuckoo
+* [cuckooDroid](https://github.com/idanr1986/cuckoo-droid) CuckooDroid - Automated Android Malware Analysis with Cuckoo Sandbox.
+* [docker-cuckoo](https://github.com/blacktop/docker-cuckoo) Cuckoo Sandbox Dockerfile
+* [cuckooautoinstall](https://github.com/buguroo/cuckooautoinstall) Auto Installer Script for Cuckoo Sandbox
+* [cuckooML](https://github.com/honeynet/cuckooml) CuckooML: Machine Learning for Cuckoo Sandbox
+* [Panda-Sandbox](https://github.com/PowerLZY/Panda-Sandbox) Cuckoo python3 (Unfinished)
+* [HaboMalHunter](https://github.com/Tencent/HaboMalHunter#readme_cn) HaboMalHunter is a sub-project of Habo Malware Analysis System
+
+源码分析
+
+* [cuckoo技术分析全景图](https://cloud.tencent.com/developer/article/1597020)
+* [cuckoo沙箱源码分析上](https://bbs.pediy.com/thread-260038.htm)
+* [cuckoo沙箱源码分析中](https://bbs.pediy.com/thread-260087.htm)
+* [cuckoo沙箱源码分析后](https://bbs.pediy.com/thread-260252.htm)
+* [腾讯哈勃Linux沙箱源码分析上](https://zhuanlan.zhihu.com/p/54756592)
+* [腾讯哈勃Linux沙箱源码分析下](
+
+
+
+
+
+> 逆向火绒安全软件驱动sysdiag
+
+这个在gitee有,我建议以后可以去下载下来
+
+它可能把整个驱动给下载下来了
+
+
+
+![image-20230725170432624](img/image-20230725170432624.png)
+
+
+
+
+
+> Navy_public
+
+
+
+轻量级自动分析病毒程序调用上下文、游戏反调试实现技术...
+
+一款工具,可以去了解一下
+
+![image-20230725175609481](img/image-20230725175609481.png)
+
+
+
+# 用什么语言做远控最好
+
+
+
+建议越底层越好
+
+因为越底层对环境要求越低
+
+比如C#需要肉机得有.net环境
+
+比如MFC,需要肉机得有xx环境
+
+...
+
+所以用C最好
+
+举一个实际的例子..
+
+之前用vs2022写纯C语言,一个简单的MessageBOx,拖到虚拟机或者沙箱运行..
+
+居然都需要2个dll环境,msvcruntime140d.dll和ucrtbased.dll
+
+这是逼我用vs2019! 或者说逼我用vs2010? 还是说用vc6.0 ?
+
+
+
+又说回来...环境问题的解决办法就一定只有一种吗? 难道我们不可以打包环境吗?比如附上msvcruntime140d.dll和ucrtbased.dll
+
+但是.net那个环境确实不好附上
+
+又说回来..有的时候..比如一些API..为了脱离环境...我们甚至需要手写这个API或者函数
 
 
 

@@ -1,6 +1,16 @@
 # 记事本-NtResumeThread() 之 进程隐藏
 
-[mycode/Re/API_HOOK/记事本-NtQuerySystemInformation_进程隐藏/全局钩子-NtResumeThread at 53aeb0d0ae0d86f03fc8393575912ded00dfafeb · redqx/mycode](https://github.com/redqx/mycode/tree/53aeb0d0ae0d86f03fc8393575912ded00dfafeb/Re/API_HOOK/记事本-NtQuerySystemInformation_进程隐藏/全局钩子-NtResumeThread)
+木马不要去隐藏自己的进程
+
+杀软的权限比较高
+
+我们只能欺骗ring3的进程查看器
+
+对于杀软来说,很难隐藏
+
+
+
+
 
 之前那个进程隐藏用的是createProcess和NtQuerySystemInformation() 钩取explorer.exe
 
