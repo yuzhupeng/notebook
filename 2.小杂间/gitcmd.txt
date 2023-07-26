@@ -1,9 +1,0 @@
-
-
-git add .
-git commit -m "笔记更新"
-git push -u origin master
-
-git config --global http.sslVerify "false"
-git config --global --unset http.proxy
-git config --global --unset https.proxy
