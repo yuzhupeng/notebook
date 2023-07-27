@@ -402,7 +402,7 @@ struct IMAGE_SECTION_HEADER SectionHeaders[n]
 
 # 相关结构体名字
 
-```
+```c
 PIMAGE_DOS_HEADER dos_Header;
 PIMAGE_NT_HEADERS32 nt_Header;
 PIMAGE_SECTION_HEADER sec_Header;
