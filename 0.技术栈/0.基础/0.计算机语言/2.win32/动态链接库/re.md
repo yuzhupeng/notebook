@@ -45,9 +45,21 @@ BOOL WINAPI DllMain(
 
 
 
-# 导出一个函数
+# 导出
 
-使用 `__declspec(dllexport)`导出函数
+DLL中导出函数的声明有两种方式：
+
+一种方式是：在函数声明中加上__declspec(dllexport)；
+
+另外一种方式是：采用模块定义(.def)文件声明，(.def)文件为链接器提供了有关被链接程序的导出、属性及其他方面的信息。
+
+
+
+## __declspec(dllexport)
+
+
+
+使用 `__declspec(dllexport)`导出一个函数
 
 
 
@@ -72,6 +84,61 @@ extern "C" __declspec(dllexport) void TestFuction( )
 {
     return ;
 }
+```
+
+
+
+
+
+## 模块化定义文件.def
+
+
+
+可以更加精确的配置一些导出函数
+
+于是写函数的时候,不需要特意的写出导出谁谁
+
+而是在del文件中导出
+
+
+
+![image-20230728003001659](img/image-20230728003001659.png)
+
+写法例子
+
+一个def文件必须有两个部分：LIBRARY和EXPORTS
+
+基本格式:  函数名字 【=内部名称】【@ordinal】【NONAME】【PRIVATE】【DATA】
+
+NONAME关键字：允许只按序号输出，并减小结果DLL中导出表的大小
+
+PRIVATE关键字：禁止将函数名字放到又LINK生成的导入库中
+
+DATA关键字：指定导出的是数据，而不是代码。
+
+
+
+
+
+
+
+```
+LIBRARY MyDLL
+
+;我是注释
+;LIBRARY不一定需要跟着dll名字
+
+EXPORTS
+
+func1=f1   @3
+
+func2=f2   @4
+
+f3 @5   NONAME
+
+f4 @7   PRIVATE
+    
+global_variable DATA
 ```
 
 

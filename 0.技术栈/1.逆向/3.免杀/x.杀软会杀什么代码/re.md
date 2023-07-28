@@ -1,5 +1,7 @@
 2023-07-27 测试
 
+
+
 ```c
 #include <windows.h>
 #include<stdio.h>
@@ -20,3 +22,9 @@ int main()
 ```
 
 ![image-20230727212338610](img/image-20230727212338610.png)
+
+
+
+导出表函数遍历
+
+![image-20230727231556782](img/image-20230727231556782.png)
