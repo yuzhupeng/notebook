@@ -8,7 +8,9 @@
 
 如果出现异常,并且把异常交付给用户的处理程序,需要做一些过程的配置
 
-![Untitled](27d33af6ca5244a095cb96384bc21234Untitled.png)
+ 
+
+![image-20230728171404213](img/image-20230728171404213.png)
 
 然后逐个浏览
 
@@ -80,15 +82,15 @@ int main()
 
 右键asm文件
 
-![Untitled](27d33af6ca5244a095cb96384bc21234Untitled1.png)
+![Untitled](./img/27d33af6ca5244a095cb96384bc21234Untitled1.png)
 
 然后
 
-![Untitled](27d33af6ca5244a095cb96384bc21234Untitled2.png)
+![Untitled](./img/27d33af6ca5244a095cb96384bc21234Untitled2.png)
 
 然后
 
-![Untitled](27d33af6ca5244a095cb96384bc21234Untitled3.png)
+![Untitled](./img/27d33af6ca5244a095cb96384bc21234Untitled3.png)
 
 ```c
 ml64 /c %(fileName).asm
@@ -198,22 +200,30 @@ https://www.cnblogs.com/VxerLee/p/15185403.html
 
 # 编译设置
 
+
+
 关闭 j_@__CheckForDebuggerJustMyCode@4
 
-![Untitled](27d33af6ca5244a095cb96384bc21234Untitled4.png)
+![Untitled](./img/27d33af6ca5244a095cb96384bc21234Untitled4.png)
+
+
 
 关闭 j___RTC_CheckEsp无security_cooke检查
 
-![Untitled](27d33af6ca5244a095cb96384bc21234Untitled5.png)
+![Untitled](./img/27d33af6ca5244a095cb96384bc21234Untitled5.png)
+
+
 
 关闭 j___RTC_CheckEsp有security_cooke检查
 
-![Untitled](27d33af6ca5244a095cb96384bc21234Untitled6.png)
+![Untitled](./img/27d33af6ca5244a095cb96384bc21234Untitled6.png)
 
-关闭 关闭堆栈不可以执行
 
-![Untitled](27d33af6ca5244a095cb96384bc21234Untitled7.png)
+
+关闭 数据段不可执行
+
+![Untitled](./img/27d33af6ca5244a095cb96384bc21234Untitled7.png)
 
 “ **pch”预编译头文件来自编译器的其他版本，或者预编译头为 C++ 而在 C 中使用它(或相反) and vs找不到路径**
 
-![Untitled](27d33af6ca5244a095cb96384bc21234Untitled8.png)
+![Untitled](./img/27d33af6ca5244a095cb96384bc21234Untitled8.png)
