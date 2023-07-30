@@ -4,9 +4,23 @@
 
 https://scofieldwyq.github.io/2016/02/29/git%E4%BB%8E%E8%BF%9C%E7%A8%8B%E5%BA%93%E5%90%8C%E6%AD%A5%E5%88%B0%E6%9C%AC%E5%9C%B0%E4%BB%93%E5%BA%93/
 
-
+https://blog.csdn.net/qq_29493173/article/details/113094143
 
 https://zhuanlan.zhihu.com/p/636418854
+
+
+
+# 第一次
+
+
+
+```c
+git config --global user.name  "redqx"//自定义用户名
+git config --global user.email "935797872@qq.com"//用户邮箱
+ssh-keygen -t rsa -C "935797872@qq.com"
+ssh -T git@github.com
+git remote add origin https://github.com/redqx/NoteBook.git
+```
 
 
 

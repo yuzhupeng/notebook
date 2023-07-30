@@ -6,6 +6,8 @@
 
 环境配置 https://blog.csdn.net/hk_5788/article/details/46801647
 
+我用的是vs2019+wdk10，安装过程既快有方便
+
 
 
 ```c
