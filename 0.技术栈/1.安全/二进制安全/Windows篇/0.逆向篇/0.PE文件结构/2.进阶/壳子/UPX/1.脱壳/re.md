@@ -1,6 +1,8 @@
-# 手动脱壳
+# 手动脱壳: IDA+x64dbg
 
 环境:upx-4.0.2-win64
+
+
 
 测试程序:
 
@@ -67,23 +69,23 @@ UPX1:004205B8                               start endp ; sp-analysis failed
 
 然后打开我们的x64debg自带插件scylla
 
-![Untitled](%E6%89%8B%E5%8A%A8%E8%84%B1%E5%A3%B3%200fb014feb18e4381b873ade9bd56b954/Untitled.png)
+![Untitled](./img/0fb014feb18e4381b873ade9bd56b954Untitled.png)
 
 然后
 
-![Untitled](%E6%89%8B%E5%8A%A8%E8%84%B1%E5%A3%B3%200fb014feb18e4381b873ade9bd56b954/Untitled%201.png)
+![Untitled](./img/0fb014feb18e4381b873ade9bd56b954Untitled1.png)
 
 保证scylla那个地方的OEP地址和我们荧光色光标EIP地址相同
 
 然后直接点击dump,然后保存
 
-![Untitled](%E6%89%8B%E5%8A%A8%E8%84%B1%E5%A3%B3%200fb014feb18e4381b873ade9bd56b954/Untitled%202.png)
+![Untitled](./img/0fb014feb18e4381b873ade9bd56b954Untitled2.png)
 
 然后我们还要继续修改它
 
 不要关闭scylla插件和x32dbg
 
-![Untitled](%E6%89%8B%E5%8A%A8%E8%84%B1%E5%A3%B3%200fb014feb18e4381b873ade9bd56b954/Untitled%203.png)
+![Untitled](./img/0fb014feb18e4381b873ade9bd56b954Untitled3.png)
 
 然后点击 IAT Autosearch, Get Imports
 
@@ -91,7 +93,7 @@ UPX1:004205B8                               start endp ; sp-analysis failed
 
 继续点击FixDump
 
-![Untitled](%E6%89%8B%E5%8A%A8%E8%84%B1%E5%A3%B3%200fb014feb18e4381b873ade9bd56b954/Untitled%204.png)
+![Untitled](./img/0fb014feb18e4381b873ade9bd56b954Untitled4.png)
 
 选中C1_dump.exe (我们之前dump)的
 
@@ -101,6 +103,6 @@ UPX1:004205B8                               start endp ; sp-analysis failed
 
 fixdump后,会主动生成C1_dump_SCY.exe
 
-![Untitled](%E6%89%8B%E5%8A%A8%E8%84%B1%E5%A3%B3%200fb014feb18e4381b873ade9bd56b954/Untitled%205.png)
+![Untitled](./img/0fb014feb18e4381b873ade9bd56b954Untitled5.png)
 
 C1_dump_SCY.exe就是成品
