@@ -16,7 +16,7 @@ exp是一具有攻击性的源代码
 
 具体参考  0.技术栈\1.安全\二进制安全\1.恶意代码\2.ShellCode技术
 
-
+https://github.com/3gstudent/Shellcode-Generater
 
 
 

@@ -76,3 +76,19 @@ ps: 可能我们找的函数不对,真正匹配特征的是另外一些函数
 
 
 ps: 杀软不是对进程扫描吗? 开线程又能如何.. 一样被扫描呀
+
+
+
+
+
+# nb的github项目
+
+内存加载方式可以使用下列几个项目：
+
+1.https://github.com/aaaddress1/RunPE-In-Memory
+2.https://github.com/nettitude/SimplePELoader
+3.https://github.com/BenjaminSoelberg/ReflectivePELoader
+4.https://github.com/hasherezade/pe_to_shellcode
+4.https://github.com/hasherezade/pe_to_shellcode
+5.https://github.com/fancycode/MemoryModule
+6.https://github.com/Scavanger/MemoryModule.net

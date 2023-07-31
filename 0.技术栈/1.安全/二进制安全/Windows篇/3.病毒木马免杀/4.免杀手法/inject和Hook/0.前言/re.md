@@ -111,9 +111,9 @@ Pcalua.exe、Url.dll、zipfldr.dll、Syncappvpublishingserver.vbs
 
 具体更多白名单文件也可以去 https://lolbas-project.github.io/ 看看
 
+vmplayer.exe，vmware.exe，VBoxHeadless.exe，VirtualBox.exe等虚拟机文件
 
 
- 
 
 ## DLL是如何被加载的
 
@@ -125,7 +125,9 @@ Pcalua.exe、Url.dll、zipfldr.dll、Syncappvpublishingserver.vbs
 
 
 
-## 关于主动加载DLL的一个h校验
+## 关于主动加载DLL的一个hash校验
+
+比如你在dllmain里面写一个弹窗,如果成功加载,必然弹窗
 
 
 
@@ -148,6 +150,8 @@ ps: 导入表加载不可能存在hash校验
 看是否能够运行到LoadLIrary,如果运行到LoadLIrary
 
 就说明我们就可以直接加载DLLMain了
+
+
 
 
 
