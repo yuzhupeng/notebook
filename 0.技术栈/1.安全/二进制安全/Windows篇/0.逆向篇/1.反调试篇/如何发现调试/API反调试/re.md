@@ -253,7 +253,7 @@ NTSTATUS NTAPI NtCreateThreadEx (
 
 CheckRemoteDebuggerPresent
 
-```
+```c
 CheckRemoteDebuggerPresent( _in_ 进程句柄, _oot_ &result)
 如果调试
 {
@@ -268,7 +268,7 @@ else
 
 x86
 
-```
+```c
 push eax
 push esp
 push -1 ;GetCurrentProcess()
@@ -280,7 +280,7 @@ jne being_debugged
 
 x64
 
-```
+```c
 enter 20h, 0
 mov edx, ebp
 or rcx, -1 ;GetCurrentProcess()
@@ -290,7 +290,7 @@ test ebp, ebp
 jne being_debugged
 ```
 
-```
+```c
 #define _CRT_SECURE_NO_WARNINGS
 
 # include<Windows.h>
@@ -644,6 +644,10 @@ CloseWindow()
 产生异常，使得错误码改变
 但是有时候,异常发生后,程序就直接g了
 ```
+
+
+
+
 
 ```
 #include <Windows.h>

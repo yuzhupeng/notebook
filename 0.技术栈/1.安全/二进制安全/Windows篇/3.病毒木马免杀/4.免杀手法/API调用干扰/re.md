@@ -34,3 +34,47 @@ API的导入表确实查的严
 
  
 
+这些已经过时的方法
+
+![image-20230801164348267](img/image-20230801164348267.png)
+
+![image-20230801164405183](img/image-20230801164405183.png)
+
+![image-20230801164434230](img/image-20230801164434230.png)
+
+第4个方法才是最厉害的
+
+
+
+
+
+functionHash
+
+![image-20230801212204761](img/image-20230801212204761.png)
+
+```c
+#include <windows.h>
+#include <stdio.h>
+
+//获取函数名的hash
+DWORD GetProcHash(char* lpProcName) {
+	char* p = lpProcName;
+	DWORD result = 0;
+	do {
+		result = (result << 7) - result;
+		result += *p;
+		//++p;
+	} while (*p++);
+
+	return result;
+}
+
+int main() {
+	char a[] = "MessageBoxA";
+	DWORD c = GetProcHash(a);
+	printf("%d",c);
+
+	return 0;
+}
+```
+
