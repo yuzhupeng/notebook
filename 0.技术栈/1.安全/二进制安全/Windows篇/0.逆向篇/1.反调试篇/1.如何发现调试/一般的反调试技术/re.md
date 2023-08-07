@@ -28,7 +28,11 @@ QueryPerformanceCounter(&liStart);
 
 缺点: 你需要去触发时间记录器,也就是去单步运行它,它才会有一个时间差
 
-如果你F9完整运行和你双肩运行,其实没差别的,无法检测调试器的存在
+如果你F9完整运行和你双击运行,其实没差别的,无法检测调试器的存在
+
+只有你把时间记录器内联在关键步骤里面才会有一个很好的效果
+
+所以这些API就可以上场了,就不用内联汇编了
 
 
 
@@ -182,31 +186,152 @@ int main()
 
 
 
+如果专用API的话
 
+```c
 
-# 比较检验和|哈希校验
+#include <stdio.h>
+#include <windows.h>
 
+DWORD NormallCode(int x, int y)
+{
+	
+	DWORD xx= GetTickCount();
+	int z = x + y;
+	z = z ^ x;
+	z = z ^ y;
+	z = z | (x + y);
+	xx = GetTickCount() - xx;
+	if (xx > 1000)
+	{
+		printf("you are dbg me!");
+	}
+	else
+	{
+		printf("no find you\n");
+	}
+	return z;
+}
 
-
-原理是调试器通过临时修改断点处指令为中断来取得程序控制权，
-
-可以用CRC校验，或者更简单点，直接逐字节求和，判断代码是否被篡改。
-
-在0xcc之前会有指令的字节和
-
-在设置了0xcc后也会有指令的检验和,2者之间做一个比较就知道你有没有debug
-
-问题: 在我设置了0xcc后,无论静态查看还是动态的调试都会计入0xcc吗?我在动态调试中
-
-设置断点,那么的话你一直记录的都是0xcc,这不是也避免了吗??
-
-因为算法比较简单,就难得写
-
-地址的获取可能是固定的地址或者动态地址
-
-看情况而定
-
+int main()
+{
+	NormallCode(1, 2);
+	return 0;
+}
 ```
+
+
+
+
+
+
+
+# 软件|硬件的断点检测
+
+
+
+## 软件断点0xCC
+
+
+
+### 0xCC个数检测
+
+
+
+在没有下断点的情况下,0xCC的个数是固定的
+
+如果下了多个软件断点,0xCC的个数会增加
+
+所以我们可以统计0xCC的个数来判断是否下了断点
+
+
+
+本来想开一个线程,来特意的检测0xCC的个数
+
+哪知道我用IDA调试,CPU的控制权一直落在主线程
+
+我主线程运行完毕,CreateThread的线程都还没有开始运行
+
+所以只能来一个顺序执行检测0xCC断点
+
+
+
+```c
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <Windows.h>
+
+
+DWORD WINAPI CheckDebug(PVOID pParam);
+DWORD NormallCode(int x, int y);
+
+BYTE* __stdcall getRealCall(BYTE* lp)
+{
+	return  *(DWORD*)(lp + 1) + (BYTE*)lp + 5;
+}
+int main()
+{
+
+	//HANDLE hThread = CreateThread(NULL, 0, CheckDebug, "re@dqx", 0, NULL);
+	CheckDebug("check you");
+	NormallCode(1, 2);
+	//WaitForSingleObject(hThread, INFINITE);
+	return 0;
+}
+DWORD CALLBACK CheckDebug(PVOID pParam)
+{
+	BYTE* bAddr_start = getRealCall((BYTE*)NormallCode);//开始的地址
+	DWORD func_size =   99;
+	DWORD cnt_0xcc;
+	int i;
+	//while (1)
+	//{
+		cnt_0xcc = 0;
+		for (i = 0; i< func_size; i++)//结束的地址
+		{
+			if (bAddr_start[i] == 0xCC)
+				cnt_0xcc++;
+		}
+		if (cnt_0xcc > 6)
+		{
+			printf("Find YOu %d\n", cnt_0xcc - 6);
+		}
+		//Sleep(1000);//慢点检测
+	//}
+	return 0;
+}
+DWORD NormallCode(int x, int y)
+{
+	int z = x + y;
+	z = z ^ x;
+	z = z ^ y;
+	z = z | (x + y);
+	return z;
+}
+```
+
+ 
+
+效果图
+
+![image-20230807180128949](img/image-20230807180128949.png)
+
+
+
+### 哈希校验
+
+其实就是指定一个区段, 然后计算一个摘要值
+
+如果该摘要值发生了变化,那么就说明被动过了
+
+对于调试器来说,0xCC就算一种情况
+
+
+
+ 
+
+```c
 #include <stdio.h>
 #include <windows.h>
 
@@ -252,258 +377,13 @@ int main()
 }
 ```
 
-# 软件|硬件的断点检测
 
 
 
-## 软件断点0xCC
-
-
-
-### 以前写的
-
-看网上的文章,都特别奇怪
-
-```
-    __asm {
-        cld
-        mov     edi,dwAddr
-        mov     ecx,dwCodeSize
-        mov     al,0CCH
-        repne   scasb   ; 在EDI指向大小为ECX的缓冲区中搜索AL包含的字节
-        jnz     NotFound
-        mov Found,1
-    NotFound:
-    }
-```
-
-说是扫描字节,发现0xCC
-
-但是正常的代码也可以有0xCC呀,此刻的0xCC是数据或者指令,或者地址,而不是指令
-
-```
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <Windows.h>
-#include <tlhelp32.h>
-
-DWORD WINAPI CheckDebug(PVOID pParam);
-DWORD NormallCode(int x, int y);
-
-int main()
-{
-
-    HANDLE hThread = CreateThread(NULL, 0, CheckDebug, "*********", 0, NULL);
-    //CheckDebug(0);
-    NormallCode(1, 2);
-    WaitForSingleObject(hThread, INFINITE);
-	return 0;
-}
-DWORD CALLBACK CheckDebug(PVOID pParam)
-{
-    unsigned char* bAddr = 0x00415400;//开始的地址
-    DWORD dwCodeSize = 99;
-    DWORD cnt = 0;
-    int i = 0;
-    printf("Start\n");
-    while (1)
-    {
-        for (i = 0; &bAddr[i]<=0x00415462; i++)//结束的地址
-        {
-            if (bAddr[i] == 0xCC)
-                cnt++;
-        }
-        if (cnt > 6)
-        {
-            printf("Find YOu %d\n",cnt-6);
-        }
-        cnt = 0;
-        Sleep(1000 * 2);
-    }
-    printf("End\n");
-    return 0;
-}
-DWORD NormallCode(int x, int y)
-{
-    int z = x + y;
-    z = z ^ x;
-    z = z ^ y;
-    z = z | (x + y);
-    return z;
-}
-```
-
-破解方法就似乎修改跳转吧
-
-其中我发现了游戏额字节区域它不让你访问,于是就发生了异常
-
-### 检查有没有下0xCC
-
-### MD5哈希校验
-
-其实就是用MD5算法去检验一下以前的代码区
-
-传入的数据是代码区起始地址
-
-初入的地址是代码区的长度
-
-然后对代码区做一个MD5算法摘要
-
-把摘要值和以已经准备好的值比对
-
-如果该摘要值和准备好的数据不同
-
-就代码区域被修改过,因为出现了0xCC了
-
-```
-#include<stdio.h>
-#include<string.h>
-#include<stdlib.h>
-#include<windows.h>
-#include <Wincrypt.h>
-#include <math.h>
-#define I 20
-#define R 340
-
-//下面这2个数据之所以不写在函数里面,是为了把他们放入非代码区,,不参与MD5的校验
-char datacmp[] = "AB32FC8358B5CB09D20991DD6F963E6B";//用CE扫描出来的
-char* lp = 0x00411000;//去PE信息里面查看
-int   len = 0x5FB1;//去PE信息里面查看
-
-int MD5_API(BYTE* pbData, DWORD dwDataLen, LPSTR lpString1)
-{
-    DWORD i; // [esp+4Ch] [ebp-24h]
-    CHAR sztmp[4]; // [esp+50h] [ebp-20h] BYREF
-    BYTE output[16]; // [esp+54h] [ebp-1Ch] BYREF
-    DWORD pdwDataLen; // [esp+64h] [ebp-Ch] BYREF
-    HCRYPTHASH phHash; // [esp+68h] [ebp-8h] BYREF
-    HCRYPTPROV phProv; // [esp+6Ch] [ebp-4h] BYREF
-
-    if (!CryptAcquireContextA(&phProv, 0, 0, 1u, 0xF0000000))
-        return 0;
-    if (CryptCreateHash(phProv, 0x8003u, 0, 0, &phHash))
-    {
-        if (CryptHashData(phHash, pbData, dwDataLen, 0))
-        {
-            CryptGetHashParam(phHash, 2u, output, &pdwDataLen, 0);
-            *lpString1 = 0;
-            for (i = 0; i < pdwDataLen; ++i)
-            {
-                wsprintfA(sztmp, "%02X", output[i]);
-                lstrcatA(lpString1, sztmp);
-            }
-            CryptDestroyHash(phHash);
-            CryptReleaseContext(phProv, 0);
-            return 1;
-        }
-        else
-        {
-            CryptDestroyHash(phHash);
-            CryptReleaseContext(phProv, 0);
-            return 0;
-        }
-    }
-    else
-    {
-        CryptReleaseContext(phProv, 0);
-        return 0;
-    }
-}
-DWORD WINAPI ThreadProc(LPVOID lpParam)
-{
-    char output[64] = { 0 };
-    while (1)
-    {
-        MD5_API(lp, len, output);
-        if (memcmp(output, datacmp, 32))
-        {
-            MessageBox(NULL, output,"do not dbg me!", MB_OK);
-        }
-    }
-    return 0;
-}
-void testFunc()
-{
-    int time;
-    for (float y = 1.5f; y > -1.5f; y -= 0.1f)
-    {
-        for (float x = -1.5f; x < 1.5f; x += 0.05f)
-        {
-            float a = x * x + y * y - 1;
-            putchar(a * a * a - x * x * y * y * y <= 0.0f ? '*' : ' ');
-        }
-        putchar('\n');
-    }
-
-    for (;;)
-    {
-        system("color a");
-        for (time = 0; time < 99999999; time++);
-
-        system("color b");
-        for (time = 0; time < 99999999; time++);
-
-        system("color c");
-        for (time = 0; time < 99999999; time++);
-
-        system("color d");
-        for (time = 0; time < 99999999; time++);
-
-        system("color e");
-        for (time = 0; time < 99999999; time++);
-
-        system("color f");
-        for (time = 0; time < 99999999; time++);
-
-        system("color 0");
-        for (time = 0; time < 99999999; time++);
-
-        system("color 1");
-        for (time = 0; time < 99999999; time++);
-
-        system("color 2");
-        for (time = 0; time < 99999999; time++);
-
-        system("color 3");
-        for (time = 0; time < 99999999; time++);
-
-        system("color 4");
-        for (time = 0; time < 99999999; time++);
-
-        system("color 5");
-        for (time = 0; time < 99999999; time++);
-
-        system("color 6");
-        for (time = 0; time < 99999999; time++);
-
-        system("color 7");
-        for (time = 0; time < 99999999; time++);
-
-        system("color 8");
-        for (time = 0; time < 99999999; time++);
-
-        system("color 9");
-        for (time = 0; time < 99999999; time++);
-
-    }
-    return 0;
-}
-int main(int argc, char* argv[])
-{
-    DWORD threadID;
-    HANDLE hThread;
-    hThread = CreateThread(NULL, 0, ThreadProc, NULL, 0, &threadID);	// 创建线程
-    testFunc();
-    return 0;
-}
-```
-
-代码的运气情况是基于自己的编译环境和运行状况
-
-要想带到效果,需要自行修改一点点数值
 
 ### 软件断点去除|软件断点修改
+
+
 
 其实是基于0xCC的检测
 
