@@ -1,5 +1,7 @@
 [恶意样本分析手册——文件封装篇](http://blog.nsfocus.net/malicious-sample-analysis-manual-file-encapsulation/)
 
+
+
 Windows PE 是一个操作系统,全程是Windows PreInstallation Environment: Windows预安装环境
 
 这里的PE是讲可执行文件的格式
@@ -58,6 +60,8 @@ PIMAGE_NT_HEADERS64
 PIMAGE_NT_HEADERS32
 ```
 
+
+
 NT头开始, x64和x86的结构体就发生了变化, 变化发生于Optional_Header,前面几个成员没变
 
 ```c
@@ -78,7 +82,9 @@ typedef struct _IMAGE_NT_HEADERS {
 
 一般情况下
 
-从文件开始到0x03C 偏移处为PE的头部信息，其中记录了整个PE文件的头结构。
+从文件开始到0x03C 偏移处为PE的头部信息，其中记录了整个PE文件的头结构
+
+
 
 ![Untitled](./img/c16b95873e2e4d7981c50e401d6f6270Untitled.png)
 
