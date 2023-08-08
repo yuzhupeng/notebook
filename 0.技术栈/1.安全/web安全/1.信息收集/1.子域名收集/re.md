@@ -1,7 +1,3 @@
-
-
-
-
 域名下有子域名
 
 于是需要去收集
@@ -95,8 +91,6 @@ baidu.com是目标域名
 
 https://phpinfo.me/domain/
 
-
-
 https://site.ip138.com/
 
 ![image-20230807225929922](img/image-20230807225929922.png)
@@ -159,20 +153,6 @@ demo
 
 
 
-# 其它途径
-
-网站的crossdomain.xml文件
-
-返回包中的Access-Control-Allow-Origin头
-
-返回包中的CSP (Content-Security-Policy)头
-
-网站robots文件
-
-网站sitemap文件
-
-微步: https://x.threatbook.cn/
-
 
 
 # 谷歌搜索 Google hacking
@@ -203,6 +183,22 @@ intext:只搜索网页正文部分含有关键词的页面。
 自己百度
 手册: Web\Information_Gathering\Subdomain_Collection\googlehacking使用手册.txt
 ```
+
+
+
+# 其它途径
+
+网站的crossdomain.xml文件
+
+返回包中的Access-Control-Allow-Origin头
+
+返回包中的CSP (Content-Security-Policy)头
+
+网站robots文件
+
+网站sitemap文件
+
+微步: https://x.threatbook.cn/
 
 
 

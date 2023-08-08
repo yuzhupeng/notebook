@@ -338,7 +338,7 @@ int 2d 本来是被内核 ntroskrnl.exe 运行 `DebugServices` 用的,
 
 x86 Example
 
-```
+```c
 #include <stdio.h>
 #include <windows.h>
 
@@ -860,3 +860,60 @@ int main(int argc, char** argv)
     return 0;
 }
 ```
+
+
+
+# 故意触发错误(非异常)
+
+win32 编程
+
+A P I
+
+```c
+CloseHandle((HANDLE)0xBAAD); //引起异常
+LoadLibiary("O(∩_∩)O");//返回值确定
+```
+
+CloseHandl会触发异常的(算是中级或者高级的异常)
+
+```c
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <windows.h>
+
+EXCEPTION_DISPOSITION ExceptionRoutine(
+    PEXCEPTION_RECORD ExceptionRecord,
+    PVOID             EstablisherFrame,
+    PCONTEXT          ContextRecord,
+    PVOID             DispatcherContext)
+{
+    if (EXCEPTION_INVALID_HANDLE == ExceptionRecord->ExceptionCode)
+    {
+        printf("Stop debugging program!\n");
+
+    }
+    return ExceptionContinueExecution;
+}
+int main()
+{
+    __asm
+    {
+        // set SEH handler
+        push ExceptionRoutine
+        push dword ptr fs : [0]
+        mov  dword ptr fs : [0] , esp
+    }
+    CloseHandle((HANDLE)0xBAAD);
+    __asm
+    {
+        // return original SEH handler
+        mov  eax, [esp]
+        mov  dword ptr fs : [0] , eax
+        add  esp, 8
+    }
+    puts("Where are you?\n");
+    return 0;
+}
+```
+

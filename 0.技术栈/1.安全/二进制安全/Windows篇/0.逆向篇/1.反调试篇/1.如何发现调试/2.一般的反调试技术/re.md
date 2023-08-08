@@ -8,6 +8,10 @@
 
 
 
+只要涉及开启一个线程的调试,就会有一点不好控制
+
+
+
 # 时间记录器
 
 
@@ -226,15 +230,11 @@ int main()
 
 
 
-# 软件|硬件的断点检测
+# 软件 断点检测
 
 
 
-## 软件断点0xCC
-
-
-
-### 0xCC个数检测
+## 0xCC个数检测
 
 
 
@@ -319,7 +319,7 @@ DWORD NormallCode(int x, int y)
 
 
 
-### 哈希校验
+## 哈希校验
 
 其实就是指定一个区段, 然后计算一个摘要值
 
@@ -329,51 +329,64 @@ DWORD NormallCode(int x, int y)
 
 
 
- 
+
+
+如果代码是随机地址,会有一个重定位,那么一块字节码就会出现不同的随机哈希值
+
+所以该代码是基于固定基址 
+
+x86版本
 
 ```c
 #include <stdio.h>
 #include <windows.h>
-
-DWORD g_dwOrgChecksum = 0xF5934986;
-
-int main();
-void Checksum()
+DWORD csum1 = 0x3DE7CABB;//具体情况,具体而定
+BYTE* __stdcall getRealCall(BYTE* lp)
 {
-    BOOL bDebugging = FALSE;
-    DWORD count = 0;
-
-    __asm {
-        mov ecx, offset main
-        mov esi, offset Checksum
-        sub ecx, esi            // ecx : loop count (buf size)
-        xor eax, eax            // eax : checksum
-        xor ebx, ebx
-
- _CALC_CHECKSUM :
-        movzx ebx, byte ptr ds : [esi]
-        add eax, ebx
-        rol eax, 1
-        inc esi
-        loop _CALC_CHECKSUM
-
-        cmp eax, g_dwOrgChecksum
-        je _NOT_DEBUGGING
-        mov bDebugging, 1
-
-        _NOT_DEBUGGING:
-    }
-
-    if (bDebugging)
-        printf("  => Debugging!!!\n\n");
-    else
-        printf("  => Not debugging...\n\n");
+	return  *(DWORD*)(lp + 1) + (BYTE*)lp + 5;
 }
 
+_declspec(naked) void Checksum(BYTE* start_addr, int cnt, int Checksum)
+{
+	__asm {
+		push ebp;
+		mov ebp, esp;
+		sub esp, 64;
+		mov esi, start_addr;
+		mov ecx, cnt;				// ecx : loop count (buf size)
+		xor eax, eax;         // eax : checksum
+		xor ebx, ebx;
+
+	_CALC_CHECKSUM:
+		mov bl, ds : [esi] ;
+		add eax, ebx;
+		rol eax, 1;
+		inc esi;
+		loop _CALC_CHECKSUM;
+		cmp eax, Checksum;
+		jz _NOT_DEBUGGING;
+		xor eax, eax;
+		mov[eax], 0;
+	_NOT_DEBUGGING:
+		mov esp, ebp;
+		pop ebp;
+		ret;
+	}
+}
+DWORD NormallCode(int x, int y)
+{
+	int z = x + y;
+	Checksum(getRealCall(NormallCode), 126, csum1);//126是该函数的字节码长度
+	z = z ^ x;
+	z = z ^ y;
+	z = z | (x + y);
+	return z;
+}
 int main()
 {
-    Checksum();
-    return 0;
+	int x = NormallCode(1, 2);
+	printf("%d", x);
+	return 0;
 }
 ```
 
@@ -381,203 +394,109 @@ int main()
 
 
 
-### 软件断点去除|软件断点修改
-
-
+## 软件断点去除&&软件断点修改
 
 其实是基于0xCC的检测
 
-原理:
+类似之前的0xCC的个数检测
 
-这里我么用的是读取原来的字节码
+我们这里的原理,运行中,如果字节码发生了变化,那就会被发现
 
-在调试中,开启一个线程,不断的去循环校验,然后去读取字节码
+比如我们在运行中,动态的F2,就会出现0xCC的消失和出现
 
-读取过程中就两两比对,发现差异
 
-如果有差异,就说明该字节码被修改为了0xCC
 
-就前面提到的MD5哈希校验,,,其实就是对原始代码的一个摘要
+原理: 这个代码是有问题的, 
 
-但是我们并没有说是直接拷贝一份原始字节码.写死在内存里面
+问题在于一个线程的调度问题
 
-然后在调试运行的时候,去动态的读取调试器下的字节码,
+也就是主线程都运行完了,TMD检测线程还没有开始
 
-然后把读取的字节码和我们写死在内存里面的字节码来一个一一的比较
+关于设置线程优先级.我还是没有成功
 
-如果这样做确实很准确...但是会显得比较臃肿
+但是原理放在那里的,以后再说吧
 
-我们采取的措施是程序运行的时候开一个线程
-
-动态的读取字节码到一个内存空间叫做asm_old
-
-该线程不断的死循环,不断的读取字节码和以前的asm_old做一个比较
-
-然后根据比较结果,如果不同就说明下了有0xCC断点
-
-但是这样有一个问题
-
-我们无法预料我们创建的线程是读取的字节码就是原始的字节码
-
-此话怎讲,,,也就是如果IDA在启动前下了断点
-
-比如在0x00411CBC处下来断点0xCC,原始的字节码是0xE8
-
-于是程序启动
-
-我们开的线程读取的字节码asm_old讲不会是0xE8,而是0xCC
-
-包括后面的比较,,,也就是我们开的线程其实一直是在拿着断点处的0xCC == 0xCC
-
-做一个判断,而不是拿着0xCC == 0xE8
-
-但是,如果我们在动态调试的时候,取出了启动前下的断点
-
-那么IDA就恢复了那个字节码
-
-也就是asm_old[0x00411CBC]=0xCC 但是恢复后[0x00411CBC]=x0xE8
-
-于是就会发生一个不相等的情况
-
-此刻的检测就是启动前下了断点,然后动态调试的时候取消了,发生了字节码的差异,发现了在调试
-
-也就是动态的取消断点或者动态的下断点就会发生检测
-
-源码如下,需要根据PE文件的代码区信息做一些参数的修改
-
-```
+```c
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
 #include<windows.h>
-#include <Wincrypt.h>
-#include <math.h>
-#define I 20
-#define R 340
+ 
 
-BYTE* lp = 0x00411000;//去PE信息里面查看
-int   len = 0x5E00;//去PE信息里面查看
-
-DWORD WINAPI ThreadProc(LPVOID lpParam)
+ 
+BYTE* __stdcall getRealCall(BYTE* lp)
 {
-    DWORD oldProtect;
-    BYTE* old_asm;
-    int i;
-    BOOL result = VirtualProtect(lp, len, PAGE_EXECUTE_READWRITE, &oldProtect);
-    if (!result)
-    {
-        // 处理错误
-        exit(-1);
-    }
-    old_asm = malloc(len + 1);
-    if (old_asm)
-    {
-        memcpy(old_asm, lp, len);
-    }
-    else
-    {
-        exit(-1);
-    }
-    while (1)
-    {
-        for (i = 0; i < len; i++)
-        {
-            if (old_asm[i] != lp[i])//动态取消断点
-            {
-                //MessageBox(NULL, ":)", "do not dbg me", MB_OK);
-                lp[i] = old_asm[i]+i;
-            }
-        }
-    }
-    return 0;
+	return  *(DWORD*)(lp + 1) + (BYTE*)lp + 5;
 }
-void testFunc()
+DWORD WINAPI checkDbg(LPVOID lpParam)
 {
-    int time;
-    for (float y = 1.5f; y > -1.5f; y -= 0.1f)
-    {
-        for (float x = -1.5f; x < 1.5f; x += 0.05f)
-        {
-            float a = x * x + y * y - 1;
-            putchar(a * a * a - x * x * y * y * y <= 0.0f ? '*' : ' ');
-        }
-        putchar('\n');
-    }
-
-    for (;;)
-    {
-        system("color a");
-        for (time = 0; time < 0xffff; time++);
-
-        system("color b");
-        for (time = 0; time < 0xffff; time++);
-
-        system("color c");
-        for (time = 0; time < 0xffff; time++);
-
-        system("color d");
-        for (time = 0; time < 0xffff; time++);
-
-        system("color e");
-        for (time = 0; time < 0xffff; time++);
-
-        system("color f");
-        for (time = 0; time < 0xffff; time++);
-
-        system("color 0");
-        for (time = 0; time < 0xffff; time++);
-
-        system("color 1");
-        for (time = 0; time < 0xffff; time++);
-
-        system("color 2");
-        for (time = 0; time < 0xffff; time++);
-
-        system("color 3");
-        for (time = 0; time < 0xffff; time++);
-
-        system("color 4");
-        for (time = 0; time < 0xffff; time++);
-
-        system("color 5");
-        for (time = 0; time < 0xffff; time++);
-
-        system("color 6");
-        for (time = 0; time < 0xffff; time++);
-
-        system("color 7");
-        for (time = 0; time < 0xffff; time++);
-
-        system("color 8");
-        for (time = 0; time < 0xffff; time++);
-
-        system("color 9");
-        for (time = 0; time < 0xffff; time++);
-
-    }
-    return ;
+	DWORD oldProtect;
+	BYTE* old_asm;
+	int i;
+	BYTE* lp =*(DWORD*)lpParam;
+	int len= *(DWORD*)((BYTE*)lpParam+4);
+	BOOL result = VirtualProtect(lp, len, PAGE_EXECUTE_READWRITE, &oldProtect);//对代码区rwx
+	if (!result)
+	{
+		// 处理错误
+		exit(-1);
+	}
+	old_asm = malloc(len + 1);
+	if (old_asm)
+	{
+		memcpy(old_asm, lp, len);
+	}
+	else
+	{
+		exit(-1);
+	}
+	while (1)
+	{
+		for (i = 0; i < len; i++)
+		{
+			if (old_asm[i] != lp[i])
+			{
+				MessageBoxA(NULL, ":)", "do not dbg me", MB_OK);
+				lp[i] = old_asm[i] + i;//然后引发一个执行异常,当然你可以恢复
+			}
+		}
+	}
+	return 0;
+}
+//花爱心的函数
+DWORD NormallCode(int x, int y)
+{
+	
+	HANDLE hThread;
+	int z;
+	BYTE lp[8];
+	*(DWORD*)lp = getRealCall(NormallCode);
+	*(DWORD*)(lp + 4) = 212;
+	hThread = CreateThread(NULL, 0, checkDbg, lp, 0, 0);	//创建线程 但是最好先于main函数执行
+	WaitForSingleObject(hThread,3000);
+	z = x + y;
+	z = z ^ x;
+	z = z ^ y;
+	z = z | (x + y);
+	TerminateThread(hThread, 0);
+	return z;
 }
 int main()
 {
-    DWORD threadID;
-    HANDLE hThread;
-    hThread = CreateThread(NULL, 0, ThreadProc, NULL, 0, &threadID);	//创建线程 但是最好先于main函数执行
-    testFunc();
-    return 0;
+	
+	int z=NormallCode(1, 2);
+	printf("%d\n", z);
+	return 0;
 }
 ```
 
-但是,,,,我们一般下断点,多是启动前下断点,启动后动态的下断点几率要小一些
+一起对win32线程这个东西哦
 
-所以如何在基于启动后读取字节码到old_asm然后检测?
 
-其实上面所说的,如果对比没有发生差异,,,,就检测不出来
 
-发生差异的时候,就是动态的下了一个断点或者动态的取消了一个断点
+# 硬件断点
 
-没办法做到一启动就发现你下了断点
 
-## 硬件断点
 
 基于硬件断点的监测
 
@@ -591,7 +510,7 @@ DR6、DR7用于记录Dr0-Dr3中断点的相关属性。
 
 如果没有硬件断点，那么DR0、DR1、DR2、DR3这4个寄存器的值都为0
 
-```
+```c
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -637,59 +556,7 @@ DWORD NormallCode(int x, int y)
 }
 ```
 
-# 故意触发错误(非异常)
 
-win32 编程
-
-A P I
-
-```
-CloseHandle((HANDLE)0xBAAD); //引起异常
-LoadLibiary("O(∩_∩)O");//返回值确定
-```
-
-CloseHandl会触发异常的(算是中级或者高级的异常)
-
-```
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <windows.h>
-
-EXCEPTION_DISPOSITION ExceptionRoutine(
-    PEXCEPTION_RECORD ExceptionRecord,
-    PVOID             EstablisherFrame,
-    PCONTEXT          ContextRecord,
-    PVOID             DispatcherContext)
-{
-    if (EXCEPTION_INVALID_HANDLE == ExceptionRecord->ExceptionCode)
-    {
-        printf("Stop debugging program!\n");
-
-    }
-    return ExceptionContinueExecution;
-}
-int main()
-{
-    __asm
-    {
-        // set SEH handler
-        push ExceptionRoutine
-        push dword ptr fs : [0]
-        mov  dword ptr fs : [0] , esp
-    }
-    CloseHandle((HANDLE)0xBAAD);
-    __asm
-    {
-        // return original SEH handler
-        mov  eax, [esp]
-        mov  dword ptr fs : [0] , eax
-        add  esp, 8
-    }
-    puts("Where are you?\n");
-    return 0;
-}
-```
 
 # 内存扫描之特征码监测(失败)
 

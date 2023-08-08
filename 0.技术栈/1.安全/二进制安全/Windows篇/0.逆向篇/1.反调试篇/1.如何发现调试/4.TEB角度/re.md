@@ -1,8 +1,8 @@
-# TEB_PEB反调试
+下面都是x86模式下进行的,x64以后再说吧
 
-# API
 
-TEB获取
+
+# 通过API调用获取TEB
 
 way1
 
@@ -15,6 +15,15 @@ tmp2();
 way2
 
 ```c
+typedef struct _PROCESS_BASIC_INFORMATION
+{
+      DWORD ExitStatus;                     // 接收进程终止状态
+      DWORD PebBaseAddress;                 // 接收进程环境块地址(PEB)
+      DWORD AffinityMask;                     // 接收进程关联掩码
+      DWORD BasePriority;                     // 接收进程的优先级类
+      ULONG UniqueProcessId;                 // 接收进程ID
+      ULONG InheritedFromUniqueProcessId;     // 接收父进程ID
+} PROCESS_BASIC_INFORMATION;
 HMODULE hModule = LoadLibrary("ntdll.dll");
 pZwQueryInformationProcess = (GetProcAddress(hModule, "ZwQueryInformationProcess");
 NTSTATUS Status = pZwQueryInformationProcess(
@@ -25,21 +34,9 @@ NTSTATUS Status = pZwQueryInformationProcess(
     NULL);
 ```
 
-```c
-typedef struct _PROCESS_BASIC_INFORMATION
-{
-      DWORD ExitStatus;                     // 接收进程终止状态
-      DWORD PebBaseAddress;                 // 接收进程环境块地址(PEB)
-      DWORD AffinityMask;                     // 接收进程关联掩码
-      DWORD BasePriority;                     // 接收进程的优先级类
-      ULONG UniqueProcessId;                 // 接收进程ID
-      ULONG InheritedFromUniqueProcessId;     // 接收父进程ID
-} PROCESS_BASIC_INFORMATION;
-```
 
-# x86
 
-## BeingDebugged
+# BeingDebugged
 
 可以调用windows的API直接获取
 
@@ -239,7 +236,7 @@ int main()
 }
 ```
 
-## ProcessHeap
+# ProcessHeap
 
 ```
 #include <stdio.h>
@@ -286,7 +283,7 @@ int main(int argc, char* argv[])
 }
 ```
 
-## NtGlobalFlag
+# NtGlobalFlag
 
 hex(0x10|0x20|0x40)=0x70
 
@@ -330,7 +327,7 @@ int main(int argc, char* argv[])
 }
 ```
 
-## 堆Magic标志
+# 堆Magic标志
 
 当进程被调试器调试时该进程堆会被一些特殊的标志填充，
 
@@ -376,7 +373,7 @@ int main()
 }
 ```
 
-## Ldr 失败
+# Ldr 失败
 
 至少我用CE没有扫描出EEFEEEFE的数值
 
@@ -417,7 +414,7 @@ int main()
 }
 ```
 
-## Example
+# Example
 
 ```
 #include <stdio.h>
@@ -507,7 +504,9 @@ int main()
 }
 ```
 
-# x64
+
+
+# 关于x64
 
 ```
 .CODE

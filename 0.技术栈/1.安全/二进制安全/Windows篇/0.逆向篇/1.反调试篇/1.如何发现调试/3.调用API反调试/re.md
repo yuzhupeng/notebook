@@ -1,10 +1,12 @@
-# API反调试
+
 
 很多API可以自己去Load,而不是直接调用,这样可能会隐蔽一点点
 
+
+
 # IsDebuggerPresent
 
-```
+```c
 #include<Windows.h>
 BOOL IsDebuggerPresent();
 ```
@@ -13,11 +15,69 @@ BOOL IsDebuggerPresent();
 
 如果当前进程未在调试器的上下文中运行，则返回值为0。
 
+```c
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+#include<windows.h>
+ 
+int main()
+{
+	if (IsDebuggerPresent())
+	{
+		printf("you are dbg me!");
+	}
+	else
+	{
+		printf("all right");
+	}
+
+	return 0;
+}
+```
+
+
+
+# CheckRemoteDebuggerPresent
+
+`kernel32`的`CheckRemoteDebuggerPresent`函数用于检测指定进程是否正在被调试.
+
+CheckRemoteDebuggerPresent和IsDebuggerPresent类似
+
+
+
+```c
+#define _CRT_SECURE_NO_WARNINGS
+
+# include<Windows.h>
+# include<stdio.h>
+BOOL CheckDebug()
+{
+	BOOL isDebugged;
+	CheckRemoteDebuggerPresent(GetCurrentProcess(), &isDebugged);
+	return isDebugged;
+}
+int main(int argc, char* argv[])
+{
+	if (CheckDebug())
+		printf("Find You \n");
+	else
+		printf("where are you\n");
+	return 0;
+}
+```
+
+
+
+
+
+
+
 # NtSetInformationThread
 
 应该和线程监测有关
 
-```
+```c
 typedef enum _THREADINFOCLASS {
 	ThreadBasicInformation,
 	ThreadTimes,
@@ -63,15 +123,16 @@ decode是解除反调试,只要传入的不是0x11,应该都行
 
 eg1:
 
-```
+```c
 #include <Windows.h>
 #include <stdio.h>
 
 // 反调试函数
-void HideFromDebugger() {
-	DWORD tmp1 = 0;
-	DWORD tmp2 = 0;
-	HMODULE hNtDll = LoadLibrary("ntdll.dll");
+void HideFromDebugger() 
+{
+	DWORD tmp1;
+	DWORD tmp2;
+	HMODULE hNtDll = LoadLibraryA("ntdll.dll");
 	if (hNtDll)
 	{
 		tmp1 = (DWORD)GetProcAddress(hNtDll, "NtSetInformationThread");
@@ -89,7 +150,7 @@ void HideFromDebugger() {
 }
 
 // 线程函数
-void myThread()
+void testFunc()
 {
 	HideFromDebugger();
 	while (1)
@@ -100,47 +161,14 @@ void myThread()
 }
 int main()
 {
-	myThread();
+	testFunc();
 	return 0;
 }
 ```
 
 eg2:
 
-```c
-#include "stdio.h"
-#include "windows.h"
-#include "tchar.h"
 
-void DetachDebugger()
-{
-
-    typedef enum _THREAD_INFORMATION_CLASS
-    {
-        decode=0,
-        encode =17          // 17 (0x11)
-    } THREAD_INFORMATION_CLASS;
-
-    typedef NTSTATUS(WINAPI* ZWSETINFORMATIONTHREAD)(
-        HANDLE                          ThreadHandle,
-        THREAD_INFORMATION_CLASS        ThreadInformationClass,
-        PVOID                           ThreadInformation,
-        ULONG                           ThreadInformationLength
-        );
-    HMODULE tmp = GetModuleHandle(L"ntdll.dll");
-    if (tmp == NULL)
-        exit(-1);
-    ZWSETINFORMATIONTHREAD pZwSetInformationThread = (ZWSETINFORMATIONTHREAD)GetProcAddress(tmp, "ZwSetInformationThread");
-    pZwSetInformationThread(GetCurrentThread(), encode, NULL, 0);
-        printf("you can not get here\n");
-}
-int _tmain(int argc, TCHAR* argv[])
-{
-    DetachDebugger();
-    system("pause nul");
-    return 0;
-}
-```
 
 但是我们是可以通过汇编调用的
 
@@ -148,67 +176,15 @@ ps: 现在不会,说是要进入内核调用
 
 下面是一个错误的代码
 
-```
-//code by shoooo
-push    0
-push    0
-push    11
-push    -2
-mov     eax, 0C7
-mov     edx, esp
-int     2E
-mov     eax, 0E5
-mov     edx, esp
-int     2E
-mov     eax, 0EE
-mov     edx, esp
-int     2E
-mov     eax, 136
-mov     edx, esp
-int     2E
-add     esp, 10
-```
+
 
 关于Hook,下面是一个无法运行的代码
 
-```c
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <windows.h>
 
-pfnNtSetInformationThread g_origNtSetInformationThread = NULL;
-NTSTATUS NTAPI HookNtSetInformationThread(
-    _In_ HANDLE ThreadHandle,
-    _In_ ULONG  ThreadInformationClass,
-    _In_ PVOID  ThreadInformation,
-    _In_ ULONG  ThreadInformationLength
-)
-{
-    if (ThreadInformationClass == ThreadHideFromDebugger &&
-        ThreadInformation == 0 && ThreadInformationLength == 0)
-    {
-        return STATUS_SUCCESS;
-    }
-    return g_origNtSetInformationThread(ThreadHandle,
-        ThreadInformationClass, ThreadInformation, ThreadInformationLength
-}
-
-void SetHook()
-{
-    HMODULE hNtDll = LoadLibrary("ntdll.dll");
-    if (NULL != hNtDll)
-    {
-        g_origNtSetInformationThread = (pfnNtSetInformationThread)GetProcAddress(hNtDll, "NtSetInformationThread");
-        if (NULL != g_origNtSetInformationThread)
-        {
-            Mhook_SetHook((PVOID*)&g_origNtSetInformationThread, HookNtSetInformationThread);
-        }
-    }
-}
-```
 
 # NtCreateThreadEx
+
+
 
 Windows从Vista开始引入了`NtCreateThreadEx`函数，函数原型如下所示
 
@@ -247,77 +223,145 @@ NTSTATUS NTAPI NtCreateThreadEx (
 
 传入值为4的时候，貌似OD里对这个线程里的代码下断会飞，似乎是hidefromdbgger的功能。
 
-# CheckRemoteDebuggerPresent
 
-`kernel32`的`CheckRemoteDebuggerPresent`函数用于检测指定进程是否正在被调试.
 
-CheckRemoteDebuggerPresent
+eg
 
 ```c
-CheckRemoteDebuggerPresent( _in_ 进程句柄, _oot_ &result)
-如果调试
+ #include <Windows.h>
+typedef NTSTATUS(NTAPI* pfnNtCreateThreadEx) (
+	_Out_    PHANDLE              ThreadHandle,
+	_In_     ACCESS_MASK          DesiredAccess,
+	_In_opt_ PVOID		  ObjectAttributes,		//POBJECT_ATTRIBUTES
+	_In_     HANDLE               ProcessHandle,
+	_In_     PVOID                StartRoutine,
+	_In_opt_ PVOID                Argument,
+	_In_     ULONG                CreateFlags,
+	_In_opt_ ULONG_PTR            ZeroBits,
+	_In_opt_ SIZE_T               StackSize,
+	_In_opt_ SIZE_T               MaximumStackSize,
+	_In_opt_ PVOID                AttributeList
+	);
+//线程回调函数
+void ThreadProc()
 {
-	result=1
+	MessageBox(NULL, TEXT("我是一个新线程！"), NULL, MB_OK);
 }
-else
-{
-	result=0;
-}
-: 返回值恒为1
-```
 
-x86
-
-```c
-push eax
-push esp
-push -1 ;GetCurrentProcess()
-call CheckRemoteDebuggerPresent
-pop eax
-test eax, eax
-jne being_debugged
-```
-
-x64
-
-```c
-enter 20h, 0
-mov edx, ebp
-or rcx, -1 ;GetCurrentProcess()
-call CheckRemoteDebuggerPresent
-leave
-test ebp, ebp
-jne being_debugged
-```
-
-```c
-#define _CRT_SECURE_NO_WARNINGS
-
-# include<Windows.h>
-# include<stdio.h>
-BOOL CheckDebug()
-{
-	BOOL isDebugged;
-	CheckRemoteDebuggerPresent(GetCurrentProcess(), &isDebugged);
-	return isDebugged;
-}
 int main(int argc, char* argv[])
 {
-	if (CheckDebug())
-		printf("Find You \n");
-	else
-		printf("where are you\n");
+	HANDLE hThread;
+	pfnNtCreateThreadEx NtCreateThreadEx;
+	NtCreateThreadEx = (pfnNtCreateThreadEx)GetProcAddress(LoadLibraryA("ntdll.dll"), "NtCreateThreadEx");
+	NtCreateThreadEx(
+		&hThread,
+		0x1FFFFF,
+		NULL,
+		GetCurrentProcess(),
+		(LPTHREAD_START_ROUTINE)ThreadProc,
+		NULL,
+		0x00000004,					//直接执行并且对调试器隐藏THREAD_CREATE_FLAGS_HIDE_FROM_DEBUGGER
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	);
+	WaitForSingleObject(hThread, INFINITE);
+	int n = GetLastError();
+	return 0;
+}
 
-	system("pause");
+
+
+```
+
+
+
+如果我们对远程线程下一个断点的话
+
+就会导致调试器分离,崩溃
+
+
+
+
+
+# NtQueryInformationProcess 查询进程
+
+```c
+ProcessDebugPort            // 0x7
+ProcessDebugFlags            // 0x1F
+ProcessDebugObjectHandle    // 0x1E
+ProcessBasicInformation        // 0x0
+```
+
+
+
+根据一些进程的端口值去判断
+
+```c
+#include <stdio.h>
+#include <windows.h>
+
+enum encode
+{
+	Ask_Pro_Dbg_Port = 7,//看这里,非调试状态下他为0,调试状态下为0xFFFFFFFF
+	Ask_Proc_Dbg_Obj_Handle = 30,//看这里 正常运行时为NULL
+	Ask_Proc_Dbg_Flags = 31,//看这里 正常运行时为1,调试时为0
+};
+typedef NTSTATUS(WINAPI* NT_Query_Info_Proc)
+(
+	HANDLE ProcessHandle,
+	enum encode ask_info,
+	PVOID proc_info_p_out,
+	ULONG ProcessInformationLength,
+	PULONG ReturnLength
+	);
+void Check_NtQueryInformationProcess()
+{
+	HMODULE tmp = NULL;
+	HANDLE tmp2 = NULL;
+	NT_Query_Info_Proc ptr_func = NULL;
+
+	DWORD check1 = 0;// Ask_Pro_Dbg_Port (0x7)
+	DWORD check2 = NULL;// Ask_Proc_Dbg_Obj_Handle (0x1E)
+	DWORD check3 = TRUE;// Ask_Proc_Dbg_Flags (0x1F)
+
+	tmp = GetModuleHandle("ntdll.dll"); //难道LoadLibiary和GetModuleHandle的功能是一样的??
+	if (tmp == NULL)
+		exit(-1);
+	ptr_func = (NT_Query_Info_Proc)GetProcAddress(tmp, "NtQueryInformationProcess");
+
+	tmp2 = GetCurrentProcess();
+	ptr_func(tmp2, Ask_Pro_Dbg_Port, &check1, sizeof(check1), NULL);
+	ptr_func(tmp2, Ask_Proc_Dbg_Obj_Handle, &check2, sizeof(check2), NULL);
+	ptr_func(tmp2, Ask_Proc_Dbg_Flags, &check3, sizeof(check3), NULL);
+
+	if ((check1 != 0) && (check2 != NULL) && (check3 != 1))
+	{
+		MessageBox(0, "Find YOu\n", "redqx", 0);
+	}
+	else
+	{
+		MessageBox(0, "Where are You\n", "redqx", 0);
+	}
+}
+
+int main()
+{
+	Check_NtQueryInformationProcess();
 	return 0;
 }
 ```
 
-# NtQueryObject
+ 
+
+# 未掌握
+
+
+
+## NtQueryObject
 
 主要是一些结构体里面存储着某些东西,然后去遍历那个信息
-
-破解方法就是不让它去遍历,或者遍历其它的东西
 
 NtQueryObject_pf(NULL, get_all, &Size_ul, sizeof(Size_ul), &Size_ul);
 
@@ -430,98 +474,7 @@ int main()
 }
 ```
 
-# NtQueryInformationProcess 查询进程
-
-```
-ProcessDebugPort            // 0x7
-ProcessDebugFlags            // 0x1F
-ProcessDebugObjectHandle    // 0x1E
-ProcessBasicInformation        // 0x0
-```
-
-根据一些进程的端口值去判断
-
-```
-#include <stdio.h>
-#include <windows.h>
-
-enum encode
-{
-    Ask_Pro_Dbg_Port = 7,//看这里,非调试状态下他为0,调试状态下为0xFFFFFFFF
-    Ask_Proc_Dbg_Obj_Handle = 30,//看这里 正常运行时为NULL
-    Ask_Proc_Dbg_Flags = 31,//看这里 正常运行时为1,调试时为0
-};
-typedef NTSTATUS(WINAPI* NT_Query_Info_Proc)
-(
-    HANDLE ProcessHandle,
-    enum encode ask_info,
-    PVOID proc_info_p_out,
-    ULONG ProcessInformationLength,
-    PULONG ReturnLength
-    );
-void Check_NtQueryInformationProcess()
-{
-    HMODULE tmp = NULL;
-    HANDLE tmp2 = NULL;
-    NT_Query_Info_Proc ptr_func = NULL;
-
-    DWORD check1 = 0;// Ask_Pro_Dbg_Port (0x7)
-    DWORD check2 = NULL;// Ask_Proc_Dbg_Obj_Handle (0x1E)
-    DWORD check3 = TRUE;// Ask_Proc_Dbg_Flags (0x1F)
-
-    tmp = GetModuleHandle("ntdll.dll"); //难道LoadLibiary和GetModuleHandle的功能是一样的??
-    if (tmp == NULL)
-        exit(-1);
-    ptr_func = (NT_Query_Info_Proc)GetProcAddress(tmp, "NtQueryInformationProcess");
-
-    tmp2 = GetCurrentProcess();
-    ptr_func(tmp2, Ask_Pro_Dbg_Port, &check1, sizeof(check1), NULL);
-    ptr_func(tmp2, Ask_Proc_Dbg_Obj_Handle, &check2, sizeof(check2), NULL);
-    ptr_func(tmp2, Ask_Proc_Dbg_Flags, &check3, sizeof(check3), NULL);
-
-    if ((check1 != 0) && (check2 != NULL) && (check3 != 1))
-    {
-        MessageBox(0, "Find YOu\n", "Xsir", 0);
-    }
-    else
-    {
-        MessageBox(0, "Where are You\n", "Xsir", 0);
-    }
-}
-
-int main()
-{
-    Check_NtQueryInformationProcess();
-    return 0;
-}
-```
-
-破解方法,在内存中修改API函数,请选择一个合适的区域写上你的汇编
-
-```
-00407E01                  8B5C24 0C            mov ebx,dword ptr ss:[esp+0xC]
-00407E05                  8B4424 08            mov eax,dword ptr ss:[esp+0x8]
-00407E09                  83F8 07              cmp eax,0x7
-00407E0C                  74 0E                je short StaAD_Nt.00407E1C
-00407E0E                  83F8 1E              cmp eax,0x1E
-00407E11                  74 11                je short StaAD_Nt.00407E24
-00407E13                  83F8 1F              cmp eax,0x1F
-00407E16                  74 14                je short StaAD_Nt.00407E2C
-00407E18                  90                   nop
-00407E19                  C2 1400              retn 0x14
-00407E1C                  C703 00000000        mov dword ptr ds:[ebx],0x0
-00407E22                ^ EB F4                jmp short StaAD_Nt.00407E18
-00407E24                  C703 00000000        mov dword ptr ds:[ebx],0x0
-00407E2A                ^ EB EC                jmp short StaAD_Nt.00407E18
-00407E2C                  C703 01000000        mov dword ptr ds:[ebx],0x1
-00407E32                ^ EB E4                jmp short StaAD_Nt.00407E18
-```
-
-对返回值做一个修改
-
-对传入的参数做一个修改
-
-# CheckGlobalFlags(失败)
+## CheckGlobalFlags(失败)
 
 可执行文件既包括IMAGE_LOAD_CONFIG_DIRECTORY结构，也包括系统加载程序的其他配置参数。
 
@@ -535,7 +488,7 @@ int main()
 
 作者写失败了? 我表示不懂原理,不会修改,反正怎么调试都不报错
 
-```
+```c
 #define _CRT_SECURE_NO_WARNINGS
 
 # include<Windows.h>
@@ -629,7 +582,13 @@ int main()
 
 CheckGlobalFlagsClearInFile函数也会执行相同的检查，但仅仅针对的是磁盘上的可执行文件
 
-# GetLastError(可能失败)
+
+
+
+
+## GetLastError(可能失败)
+
+
 
 一个未完成的代码
 
@@ -649,7 +608,7 @@ CloseWindow()
 
 
 
-```
+```c
 #include <Windows.h>
 #include <stdio.h>
 
@@ -713,3 +672,6 @@ int main()
 	return 0;
 }
 ```
+
+
+
