@@ -2,7 +2,9 @@
 
 # 返回
 
-关于手动汇编注册的返回类型
+
+
+关于手动汇编注册的返回类型,也就是处于SEH链表的那些函数
 
 ```
 // Exception disposition return values
@@ -15,7 +17,9 @@ enum _EXCEPTION_DISPOSITION
 } EXCEPTION_DISPOSITION;
 ```
 
-关于VEH/UEF/VCH的返回类型
+
+
+关于VEH/UEF/VCH/SEH的返回类型
 
 ```
 EXCEPTION_EXECUTE_HANDLER(1) 执行except代码

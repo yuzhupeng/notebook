@@ -41,3 +41,14 @@
 5. 使用向量号n作为索引，在IVT中找到对应的表项（n*4+IVT表基地址）
 6. 将表项中的段地址和偏移地址分别装入CS和EIP寄存器中，并开始执行对应的代码
 7. 中断例程总是以IRET指令结束。IRET指令会从堆栈中弹出前面保存的CS，IP和标志寄存器值，然后返回执行被中断的程序。
+
+
+
+
+
+## 问一下
+
+try catch c++ 和try except有什么枪区别?
+https://www.cnblogs.com/ymd12103410/p/10877145.html
+
+https://www.cnblogs.com/chechen/p/10259592.html

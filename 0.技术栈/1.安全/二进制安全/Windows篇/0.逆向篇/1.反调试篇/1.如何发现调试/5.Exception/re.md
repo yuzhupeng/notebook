@@ -1,27 +1,34 @@
-# 异常
+# 前言
 
-# windbg
 
-好像windbg可以调试异常处理函数..??? 我被吓到了
 
-```
-0:000> u ntdll!ExecuteHandler2+24 L3
-ntdll!ExecuteHandler2+0x24:
-775100af ffd1            call    ecx
-775100b1 648b2500000000  mov     esp,dword ptr fs:[0]
-775100b8 648f0500000000  pop     dword ptr fs:[0]
-0:000> bp 775100af
-```
+异常处理函数都可以去调试
 
-硬异常
+可能有些异常处理函数是用线程的方式去实现的,不好及时发现并调试
 
-- 类似于除零异常
-- 类似于int3
-- 硬件故障
+有些异常处理函数是你没有下F2断点,也不好调试,甚至我们找不到异常处理函数呢
 
-软件异常:
 
-![Untitled](%E5%BC%82%E5%B8%B8%20e1d657e68aaa4bf8a50cc1e0294ef50f/Untitled.png)
+
+不管如何利用异常去触发一个反调试
+
+其目的都是让调试器去干扰一个流程的执行
+
+有些流程调试器甚至都无法干扰,还会g
+
+
+
+
+
+
+
+
+
+ ![image-20230809111356277](img/image-20230809111356277.png)
+
+
+
+利用API去主动触发一个异常
 
 ```c
 VOID RaiseException (
@@ -32,55 +39,41 @@ VOID RaiseException (
 );
 ```
 
-# 开胃菜(可跳过)
 
-```c
-#include <stdio.h>
-#include <windows.h>
-DWORD CheckDebug()
-{
-    __try
-    {
-        __asm
-        {
-            __emit 0xF1
-        }
-    }
-    __except (1)
-    {
-        return FALSE;//交给程序自身处理
-    }
-    return TRUE;//IDA的处理
-}
 
-int main()
-{
-    if (CheckDebug())
-    {
-        printf("Check You\n");
-    }
-    else
-    {
-        printf("Where are you\n");
-    }
 
-    return 0;
-}
-```
 
-# TEB基础
+
 
 # 中断
 
-# int 0x01
+
+
+## TF异常
 
 Trap Flag（陷阱标识）位于EFLAGS寄存器内，如果TF设置为1，
 
-`EFLAGS`寄存器的第八个比特位是陷阱标志位,如果设置了就会产生一个单步异常.
+当 TF 标志位被设置为 1 时，CPU 在每执行完一条指令后会触发调试异常（Debug Exception），使得程序运行以单步模式执行，
 
-CPU将在每个指令执行后产生INT 01h或单步异常(single-step exception)。
+这可以帮助调试人员逐条执行程序代码，对程序的每一步进行跟踪和调试。
 
-以下就是基于TF设置和异常调用检查的反调试
+每执行一条指令后，CPU 将会暂停，并引发一个调试中断异常，使得调试器有机会检查和修改 CPU 寄存器、内存等信息。
+
+在实际的调试过程中，通常不会直接观察到 TF 标志位被设置为 1。
+
+这是因为调试器会负责处理 TF 标志位，**并根据需要进行设置和清除。**
+
+
+
+![image-20230809113850703](img/image-20230809113850703.png)
+
+遇到TF异常后
+
+选择Single step, 不会有什么可怕的事情发生,IDA会去处理这个异常, 结果是继续单步运行, 
+
+如果选择run, IDA不会去处理那个异常,不再控制由TF=1导致的异常
+
+
 
 Example
 
@@ -91,60 +84,60 @@ Example
 
 #include <stdio.h>
 #include <windows.h>
-#include <tchar.h>
 #include <stdlib.h>
 
 void DynAD_SingleStep()
 {
-    printf("Trap Flag (Single Step)\n");
-    char dbg[] = "Find You";
-    char title[] = "Xsir";
-    __asm {
+	printf("Trap Flag (Single Step)\n");
+	char dbg[] = "Find You";
+	char title[] = "redqx";
+	__asm {
 
-           	 install_SEH:
-                push handler
-                push DWORD ptr fs : [0]
-                mov DWORD ptr fs : [0] , esp
+	install_SEH:
+		push handler;
+		push DWORD ptr fs : [0] ;
+		mov DWORD ptr fs : [0] , esp;
 
-                pushfd //把所有的寄存器入栈
-                or dword ptr ss : [esp] , 0x100 //对栈中寄存器的数据做一个修改
-                popfd //把栈中修改的数据放入寄存器
-                nop
+		pushfd; //把所有的寄存器入栈
+		or dword ptr ss : [esp] , 0x100; //对栈中寄存器的TF数据做一个修改
+		popfd; //把栈中修改的数据放入寄存器
+		
+		nop;
+		//触发异常 这个异常如果不解决的话,IDA会来到这里,然后崩溃
+		xor eax, eax;
+		push eax;
+		lea ebx, title;
+		push ebx;
+		lea ebx, dbg;
+		push ebx;
+		push eax;
+		call MessageBoxA;
+		mov eax, 0xFFFFFFFF;
+		jmp eax;//然后触发其它异常,导致崩溃
 
-                //触发异常 这个异常如果不解决的话,IDA会来到这里,然后崩溃
-                xor eax,eax
-                push eax
-                lea ebx,title
-                push ebx
-                lea ebx, dbg
-                push ebx
-                push eax
-                call MessageBox
-                //add esp,16 不需要你去内平衡栈
-                mov eax, 0xFFFFFFFF
-                jmp eax
+	handler :
+		mov eax, dword ptr ss : [esp + 0xc] ;//获取第3个参数 ContextRecord
+		mov ebx, remove_SEH;//把EIP指向最后的安全退出函数
+		mov dword ptr ds : [eax + 0xb8] , ebx;//ContextRecord->EIP= remove_SEH
+		xor eax, eax;
+		retn;
 
-                handler :
-                mov eax, dword ptr ss : [esp + 0xc]
-                mov ebx, remove_SEH //把EIP指向最后的安全退出函数
-                mov dword ptr ds : [eax + 0xb8] , ebx
-                xor eax, eax
-                retn
-
-                remove_SEH :
-                pop dword ptr fs : [0]
-                add esp, 4
-    }
-    MessageBox(NULL,"where are you\n","Xsir",MB_OK);
+	remove_SEH :
+		pop dword ptr fs : [0] ;//pop到
+		add esp, 4;
+	}
+	MessageBox(NULL, "where are you\n", "redqx", MB_OK);
 }
 
 int main()
 {
-    DynAD_SingleStep();
-    puts("hELLO WorLD");
-    return 0;
+	DynAD_SingleStep();
+	puts("hELLO WorLD");
+	return 0;
 }
 ```
+
+
 
 基于try except
 
@@ -153,44 +146,48 @@ int main()
 
 #include <stdio.h>
 #include <windows.h>
-#include<stdlib.h>
+#include <stdlib.h>
 
 void test()
 {
-    BOOL isDebugged = TRUE;
-    __try
-    {
-        __asm
-        {
-            //这里本身就是一个异常的触发
-            pushfd
-            or dword ptr[esp], 0x100 // set the Trap Flag
-            popfd                    // Load the value into EFLAGS register
-            nop
-        }
-    }
-    __except (EXCEPTION_EXECUTE_HANDLER)//如果调试器不处理,那么在异常那里继续执行,但是该异常不是一个错误异常?不会再次触发错误死循环?
-    {
-        isDebugged = FALSE;
-    }
-    if (isDebugged)//调试器处理后,如果选择不处理,那么该BOOL值会是1,否则会是0
-    {
-        MessageBox(NULL, "Find You", "Xsir", MB_OK); //确实会被运行
-        exit(-1);
-    }
-    MessageBox(NULL, "Where Are You?", "Xsir", MB_OK); //确实会被运行
-    return;
+	BOOL isDebugged = TRUE;
+	__try
+	{
+		__asm
+		{
+			//这里本身就是一个异常的触发
+			pushfd
+			or dword ptr[esp], 0x100 // set the Trap Flag
+			popfd                    // Load the value into EFLAGS register
+			nop
+		}
+	}
+	__except (EXCEPTION_EXECUTE_HANDLER)//如果调试器不处理,那么在异常那里继续执行,但是该异常不是一个错误异常?不会再次触发错误死循环?
+	{
+		isDebugged = FALSE;
+	}
+	if (isDebugged)//调试器处理后,如果选择不处理,那么该BOOL值会是1,否则会是0
+	{
+		MessageBox(NULL, "Find You", "redqx", MB_OK); //确实会被运行
+		exit(-1);
+	}
+	MessageBox(NULL, "Where Are You?", "redqx", MB_OK); //确实会被运行
+	return;
 }
 
 int main()
 {
-    test();
-    puts("hELLO WorLD");
-    return 0;
+	test();
+	puts("hELLO WorLD");
+	return 0;
 }
 ```
 
-# int 0xFE
+
+
+之前是通过EFLAG的TF标志位让程序出现异常
+
+我们也可以通过icebp指令来设置一个和之前效果类似的异常
 
 运行`ICEBP`(`0xF1`)指令将会产生一个单步异常,
 
@@ -203,36 +200,39 @@ int main()
 #include <windows.h>
 DWORD CheckDebug()
 {
-    __try
-    {
-        __asm
-        {
-            __emit 0xF1
-        }
-    }
-    __except (1)
-    {
-        return FALSE;//交给程序自身处理
-    }
-    return TRUE;//IDA的处理
+	__try
+	{
+		__asm{
+			__emit 0xF1;
+		}
+	}
+	__except (EXCEPTION_EXECUTE_HANDLER)
+	{
+		return FALSE;//交给程序自身处理
+	}
+	return 1; 
 }
 
 int main()
 {
-    if (CheckDebug())
-    {
-        printf("Check You\n");
-    }
-    else
-    {
-        printf("Where are you\n");
-    }
+	if (CheckDebug())
+	{
+		printf("Check You\n");
+	}
+	else
+	{
+		printf("Where are you\n");
+	}
 
-    return 0;
+	return 0;
 }
 ```
 
-# int 03
+
+
+## int 03
+
+
 
 ### int 3
 
@@ -286,7 +286,7 @@ int DbgCheck()
 }
 ```
 
-# int 0x2D
+## int 0x2D
 
 第 0x2d（45） 号中断处理函数是 KiDebugService
 
@@ -435,11 +435,11 @@ tets.asm我们得修改一下文件的生成选项
 
 注意是x64哟
 
-![Untitled](%E5%BC%82%E5%B8%B8%20e1d657e68aaa4bf8a50cc1e0294ef50f/Untitled%201.png)
+![Untitled](./img/e1d657e68aaa4bf8a50cc1e0294ef50fUntitled1.png)
 
 然后设置一下自定义生成工具的选项
 
-![Untitled](%E5%BC%82%E5%B8%B8%20e1d657e68aaa4bf8a50cc1e0294ef50f/Untitled%202.png)
+![Untitled](./img/e1d657e68aaa4bf8a50cc1e0294ef50fUntitled2.png)
 
 涉及的操作
 
@@ -565,7 +565,7 @@ int main()
 
 # 基于VEH UEF VCH
 
-# VCH
+## VCH
 
 也就一个断点的检测
 
@@ -594,7 +594,7 @@ int main()
 }
 ```
 
-# UEF
+## UEF
 
 就有一个疑惑
 

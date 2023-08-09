@@ -2,48 +2,135 @@
 
 
 
-# 通过API调用获取TEB
+# 通过API调用获取PEB
 
-way1
 
-```
-tmp = GetModuleHandle("ntdll.dll");
-tmp2 = GetProcAddress( tmp,"NtCurrentTeb");
-tmp2();
-```
 
-way2
+way1: x86版本
 
 ```c
+#include <stdio.h>
+#include <windows.h>
+
+ 
+
+int main()
+{
+	DWORD tmp,tmp2;
+	tmp = GetModuleHandle("ntdll.dll");
+	tmp2 = GetProcAddress(tmp, "NtCurrentTeb");
+	__asm {
+		mov eax, tmp2;
+		call eax;
+	}
+	return 0;
+}
+```
+
+
+
+way2: x86版本 获取PEB,我不是很理解
+
+```c
+#include <stdio.h>
+#include < Windows.h>
+
+int main()
+{
+	PVOID pPeb = 0;
+	pPeb = (PVOID)__readfsdword(0x0C * sizeof(PVOID));
+	pPeb = (PVOID)((PBYTE)pPeb + 0x1000);
+	printf("%p\n", pPeb);
+	return 0;
+}
+```
+
+ 
+
+way3: x86版本
+
+```c
+#include <windows.h>
+#include <stdio.h>
+
 typedef struct _PROCESS_BASIC_INFORMATION
 {
-      DWORD ExitStatus;                     // 接收进程终止状态
-      DWORD PebBaseAddress;                 // 接收进程环境块地址(PEB)
-      DWORD AffinityMask;                     // 接收进程关联掩码
-      DWORD BasePriority;                     // 接收进程的优先级类
-      ULONG UniqueProcessId;                 // 接收进程ID
-      ULONG InheritedFromUniqueProcessId;     // 接收父进程ID
+	DWORD ExitStatus;                     // 接收进程终止状态
+	DWORD PebBaseAddress;                 // 接收进程环境块地址(PEB)
+	DWORD AffinityMask;                     // 接收进程关联掩码
+	DWORD BasePriority;                     // 接收进程的优先级类
+	ULONG UniqueProcessId;                 // 接收进程ID
+	ULONG InheritedFromUniqueProcessId;     // 接收父进程ID
 } PROCESS_BASIC_INFORMATION;
-HMODULE hModule = LoadLibrary("ntdll.dll");
-pZwQueryInformationProcess = (GetProcAddress(hModule, "ZwQueryInformationProcess");
-NTSTATUS Status = pZwQueryInformationProcess(
-    hProcess,
-    ProcessBasicInformation,
-    &Pbi,
-	sizeof(PROCESS_BASIC_INFORMATION),
-    NULL);
+
+int main()
+{
+	HMODULE hModule = LoadLibraryA("ntdll.dll");
+	if (hModule == NULL)
+	{
+		printf("Failed to load ntdll.dll\n");
+		return 1;
+	}
+
+	typedef NTSTATUS(NTAPI* PFN_ZwQueryInformationProcess)(
+		HANDLE ProcessHandle,
+		DWORD ProcessInformationClass,
+		PVOID ProcessInformation,
+		ULONG ProcessInformationLength,
+		PULONG ReturnLength);
+
+	PFN_ZwQueryInformationProcess pZwQueryInformationProcess =
+		(PFN_ZwQueryInformationProcess)GetProcAddress(hModule, "ZwQueryInformationProcess");
+
+	if (pZwQueryInformationProcess == NULL)
+	{
+		printf("Failed to get address of ZwQueryInformationProcess\n");
+		FreeLibrary(hModule);
+		return 1;
+	}
+
+	PROCESS_BASIC_INFORMATION Pbi = { 0 };
+	HANDLE hProcess = GetCurrentProcess();
+	NTSTATUS Status = pZwQueryInformationProcess(
+		hProcess,
+		0,
+		&Pbi,
+		sizeof(PROCESS_BASIC_INFORMATION),
+		NULL);
+
+	if (Status != 0)
+	{
+		printf("ZwQueryInformationProcess failed with status: %d\n", Status);
+		FreeLibrary(hModule);
+		return 1;
+	}
+
+	// 打印获取到的进程ID和父进程ID
+	printf("PEB: %p\n", Pbi.PebBaseAddress);
+	 
+	FreeLibrary(hModule);
+
+	return 0;
+}
+
 ```
 
 
 
 # BeingDebugged
 
+用的到的字段位于TEB->PEB->BeingDebugged; 
+
 可以调用windows的API直接获取
 
-```
+```c
 #include< Windows.h >
 BOOL IsDebuggerPresent();
 ```
+
+
+
+x86版本
 
 ```c
 #include <stdio.h>
@@ -90,8 +177,8 @@ int IsDebugC()
 
 int main(int argc, char* argv[])
 {
-	if (IsDebugA()&&IsDebugB()&&IsDebugC())
-		printf("check YOu");
+	if (IsDebugA() && IsDebugB() && IsDebugC())
+		printf("check YOu\n");
 	else
 		printf("where are YOu\n");
 
@@ -100,29 +187,19 @@ int main(int argc, char* argv[])
 }
 ```
 
-在FS寄存器的偏移量30h处存在PEB（进程环境块），
 
-而在X64上，PEB（进程环境块）存在于GS段寄存器的偏移量60h处。
 
-在PEB中的2个偏移量处，我们将找到BeingDebugged字段
 
-```
-0:000< dt _PEB
-ntdll!_PEB
-   +0x000 InheritedAddressSpace : UChar
-   +0x001 ReadImageFileExecOptions : UChar
-   +0x002 BeingDebugged    : UChar
-```
 
-即IsDebuggerPresent函数读取BeingDebugged字段的值。如果进程被调试，值为1，否则为0
 
-冷饭热炒
+
+冷饭热炒,其实就是混淆了一下,类似于vmp的那种恶心混淆
 
 a=1
 
 a=a+1
 
-```
+```c
 #include<stdio.h>
 int PebIsDebuggedApproach()
 {
@@ -180,65 +257,33 @@ int main()
 }
 ```
 
-下面有个x86的代码,获取PEB,我不是很理解
 
-```
-#define _CRT_SECURE_NO_WARNINGS
-#pragma warning(disable: 4996)
-#include <stdio.h>
-#include < Windows.h>
 
-WORD GetVersionWord()
-{
-    OSVERSIONINFO verInfo = { sizeof(OSVERSIONINFO) };
-    GetVersionEx(&verInfo);
-    return MAKEWORD(verInfo.dwMinorVersion, verInfo.dwMajorVersion);
-}
-BOOL IsWin8OrHigher()
-{
-    return GetVersionWord() >= _WIN32_WINNT_WIN8;
-}
-BOOL IsVistaOrHigher()
-{
-    return GetVersionWord() >= _WIN32_WINNT_VISTA;
-}
 
-// Get PEB for WOW64 Process
-PVOID GetPEB64()
-{
-    PVOID pPeb = 0;
-#ifndef _WIN64
-    // 1. There are two copies of PEB - PEB64 and PEB32 in WOW64 process
-    // 2. PEB64 follows after PEB32
-    // 3. This is true for version less then Windows 8, else __readfsdword returns address of real PEB64
-    if (IsWin8OrHigher())
-    {
-        BOOL isWow64 = FALSE;
-        typedef BOOL(WINAPI* pfnIsWow64Process)(HANDLE hProcess, PBOOL isWow64);
-        pfnIsWow64Process fnIsWow64Process = (pfnIsWow64Process)GetProcAddress(GetModuleHandleA("Kernel32.dll"), "IsWow64Process");
-        if (fnIsWow64Process(GetCurrentProcess(), &isWow64))
-        {
-            if (isWow64)
-            {
-                pPeb = (PVOID)__readfsdword(0x0C * sizeof(PVOID));
-                pPeb = (PVOID)((PBYTE)pPeb + 0x1000);
-            }
-        }
-    }
-#endif
-    return pPeb;
-}
-int main()
-{
-    PVOID tmp = GetPEB64();
-    printf("%08X\n",tmp);
-    return 0;
-}
-```
 
 # ProcessHeap
 
+用的到的字段位于 TEB->PEB->ProcessHeap->Flags和ForceFlags
+
+
+
+x86版本, IDA会被检测, vs2019可绕过
+
+
+
+其中
+
+```c
+struct _HEAP {} ProcessHeap
 ```
+
+
+
+![image-20230809103932823](img/image-20230809103932823.png)
+
+
+
+```c
 #include <stdio.h>
 #include <windows.h>
 
@@ -283,9 +328,13 @@ int main(int argc, char* argv[])
 }
 ```
 
+
+
 # NtGlobalFlag
 
-hex(0x10|0x20|0x40)=0x70
+用的到的字段位于 TEB->PEB->NtGlobalFlag
+
+hex(0x10 | 0x20 | 0x40 )=0x70
 
 在调试期间，这些标识在NtGlobalFlag字段中的设置如下：
 
@@ -295,7 +344,11 @@ FLG_HEAP_ENABLE_FREE_CHECK (0x20)
 FLG_HEAP_VALIDATE_PARAMETERS (0x40)
 ```
 
-```
+
+
+x86版本,可检测IDA,vs2019可绕过
+
+```c
 #include <stdio.h>
 #include <windows.h>
 
@@ -327,6 +380,8 @@ int main(int argc, char* argv[])
 }
 ```
 
+
+
 # 堆Magic标志
 
 当进程被调试器调试时该进程堆会被一些特殊的标志填充，
@@ -341,9 +396,13 @@ int main(int argc, char* argv[])
 
 那么当需要额外的字节来填充堆块尾部时, 就会使用0xFEEEFEEE(或一部分) 来填充
 
+
+
 [PROCESS_HEAP_ENTRY结构详细介绍](https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-process_heap_entry)
 
-```
+x86版本,可检测IDA, vs2019课绕过
+
+```c
 #include <windows.h>
 #include <stdio.h>
 
@@ -373,11 +432,22 @@ int main()
 }
 ```
 
+
+
 # Ldr 失败
 
-至少我用CE没有扫描出EEFEEEFE的数值
+调试进程时，其堆内存区域中会出现一些特殊标识，表明它正处于被调试状态。
 
-```
+最醒目的是：未使用的堆内存区域全部填充着0xEEFEEEFE，利用这一特征可判断是否处于被调试状态。
+
+PEB.Ldr 是指向 _PEB_LDR_DATA 结构体指针， _PEB_LDR_DATA 恰好是在堆内存中创建的。
+
+检测 _PEB_LDR_DATA 是否是0xEEFEEEFE 即可判断是否处于被调试，汇编的调用形式和上面的相差不多。
+ 
+
+ps: 至少我用CE没有扫描出EEFEEEFE的数值
+
+```c
 #include <windows.h>
 #include <stdio.h>
 int main()
@@ -414,9 +484,13 @@ int main()
 }
 ```
 
-# Example
 
-```
+
+# 多种混合在一起
+
+
+
+```c
 #include <stdio.h>
 #include <Windows.h>
 

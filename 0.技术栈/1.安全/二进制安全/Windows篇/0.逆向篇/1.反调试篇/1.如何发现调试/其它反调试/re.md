@@ -32,6 +32,8 @@
 
 # 防附加(失败)
 
+
+
 为了使运行中进程能够即时中断到调试器中，操作系统提供了一个函数DbgUiRemoteBreakin，
 
 其内部通过调用DbgBreakPoint产生一个中断异常从而被调试器捕获，
@@ -92,6 +94,8 @@ int main(int argc, char* argv[])
 	return 0;
 }
 ```
+
+
 
 # **探测虚拟机运行**
 

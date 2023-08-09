@@ -28,7 +28,7 @@
 
 
 
-## 基于 STARTUPINFO 进程创建的方式来判断
+## 基于 STARTUPINFO  
 
 
 
@@ -403,6 +403,10 @@ IDA - C1.exe E:\Code\normal\C\2022\tmpCTF\Debug\C1.exe //那么就检测字符�
 
 C2_default_main.exe - PID: 20728 - 模块: c2_default_main.exe - 线程: 主线程 8612 - x64dbg
 ```
+
+
+
+
 
 ```c
 #include <stdio.h>

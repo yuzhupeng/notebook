@@ -196,6 +196,8 @@ int main()
 }
 ```
 
+一单try后面出现异常,他不是往回运行,而是去except处理函数
+
 
 
 ### finally , leave
