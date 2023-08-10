@@ -18,6 +18,8 @@
 apt install libc++-dev
 ```
 
+
+
 [https://blog.csdn.net/qq_21920075/article/details/126750473](https://blog.csdn.net/qq_21920075/article/details/126750473)
 
 # 关于用户创建问题
@@ -66,16 +68,16 @@ chsh -s /bin/bash
 2. 打开终端（Terminal）应用程序。
 3. 使用以下命令编辑防火墙配置文件：`sudo vim /etc/ufw/ufw.conf`
 4. 找到**`ENABLED`**行，并将其更改为： `ENABLED=yes`
-    
+   
     这将启用Ubuntu的防火墙（Uncomplicated Firewall）。
     
 5. 保存更改并关闭编辑器（如果您使用的是Nano编辑器，则按下**`Ctrl+X`**，然后按下**`Y`**以保存更改）。
 6. 然后，使用以下命令打开8080端口： `sudo ufw allow 8080`
-    
+   
     这将在防火墙中添加一条规则，允许传入的连接通过8080端口。
     
 7. 最后，启用防火墙以应用更改： `sudo ufw enable`
-    
+   
     系统将询问您是否要继续。输入**`y`**并按下Enter键。
     
 

@@ -66,6 +66,8 @@ vkscvc
 
 
 
+# Github远控
+
 其它听说过的名字:
 
 RedRAT
@@ -78,3 +80,4 @@ StarRAT
 
 大蜘蛛
 
+https://github.com/quasar/Quasar
