@@ -15,6 +15,7 @@
 - 🐱‍💻 ID: 香香 && re@dqx
 - 🌏 出生地: D0g3.21.Reverse
 - 🚩 Flag: 道之若极,行必有格
+- 📝 daily: 辛酸日记 https://www.cnblogs.com/redqx/
 
 
 
