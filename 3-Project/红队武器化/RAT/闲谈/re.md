@@ -81,3 +81,18 @@ StarRAT
 大蜘蛛
 
 https://github.com/quasar/Quasar
+
+
+
+# 闲谈
+
+
+
+为什么用winhttp
+
+![image-20230729111528200](./img/image-20230729111528200.png)
+
+因为它很标准,可以跳过防火墙的一些协议
+
+其原理就是: 装好人干坏事
+

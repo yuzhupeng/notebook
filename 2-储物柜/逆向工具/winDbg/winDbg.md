@@ -1,11 +1,17 @@
 # winDbg
 
+
+
 # workspace
 
 1. View->Option->Wrokspace Prompts 改为Always Ask
 2. 删除WorkSpace，所有的都删除
 3. 修改成你想要的字体
 4. 关闭Windbg，会弹出一个对话框，勾选，点击YES.
+
+
+
+
 
 # 查看
 
@@ -42,8 +48,6 @@ dd 0x00400000 L40
 
 # 调试
 
-## 双机调试
-
 当程序一致时busy的时候,
 
 看向工具栏,然后选择debug
@@ -53,6 +57,14 @@ dd 0x00400000 L40
 选他就可以停住虚拟机
 
 ## xp
+
+参考链接
+
+https://blog.csdn.net/counsellor/article/details/82194920
+
+https://blog.csdn.net/team39/article/details/103386562
+
+
 
 > xp配置
 > 
@@ -89,6 +101,10 @@ C盘根目录隐藏文件:boot.ini
 ```
 "D:\Windows Kits\10\Debuggers\x86\windbg.exe" -y srv*c:\symbols*http://msdl.microsoft.com/download/symbols -b -k com:port=\\.\pipe\com_1,baud=115200,pipe
 ```
+
+
+
+
 
 # 资源链接
 
