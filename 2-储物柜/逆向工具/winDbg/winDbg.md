@@ -1,4 +1,12 @@
-# winDbg
+
+
+
+
+简单的使用手册
+
+https://blog.csdn.net/hgy413/article/details/7565003
+
+
 
 
 
@@ -63,6 +71,10 @@ dd 0x00400000 L40
 https://blog.csdn.net/counsellor/article/details/82194920
 
 https://blog.csdn.net/team39/article/details/103386562
+
+
+
+调试win10 : https://blog.csdn.net/qq_37596943/article/details/131766474
 
 
 
