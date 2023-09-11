@@ -6,11 +6,9 @@
 
 
 
-
-
-包含: 代码,笔记,资源文件
-
 >   ps:
+>
+>   学安全,是感兴趣,,😁以后干不干安全,,另说,,但会一直学下去
 >
 >   我所学的都是别人几年,甚至几十年前学烂了的
 >
@@ -20,7 +18,7 @@
 
 ## 关于我 🐱‍👤
 
-- 🐱‍💻 ID: 香香 && re@dqx
+- 🐱‍💻 ID: 香香 && redqx
 - 🌏 出生地: D0g3.21.Reverse
 - 💬 QQ/Wechat: 935797872
 - 🚩 Flag: 道之若极,行必有格
@@ -34,20 +32,6 @@
 
 可是我的文章这么垃圾,谁又会转呢,QWQ
 
-<picture>
-  <source
-    media="(prefers-color-scheme: dark)"
-    srcset="https://raw.githubusercontent.com/platane/snk/output/github-contribution-grid-snake-dark.svg"
-  />
-  <source
-    media="(prefers-color-scheme: light)"
-    srcset="https://raw.githubusercontent.com/platane/snk/output/github-contribution-grid-snake.svg"
-  />
-  <img
-    alt="github contribution grid snake animation"
-    src="https://raw.githubusercontent.com/platane/snk/output/github-contribution-grid-snake.svg"
-  />
-</picture>
 
 
 如何阅读效果更加? 😋😋😋😋😋

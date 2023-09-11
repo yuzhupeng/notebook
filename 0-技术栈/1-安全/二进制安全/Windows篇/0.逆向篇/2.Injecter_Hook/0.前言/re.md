@@ -10,38 +10,25 @@ hook的同时也要注意,别被反hook
 
 基础的:
 
-![Untitled](b81a8d48fb314c46a57ebb6f5509a02fUntitled.png)
+下图就很好的说明了一些常规的注入过程
+
+![image-20230911193844835](./img/image-20230911193844835.png)
 
 
-
-假设 notepad.exe 要打开 c:\abc.txt 文件，首先在程序代码中调用 msvcrt!fopen() API ，然后引发一系列的 API 调用，如下：
-
-
-
-```c
-- msvcrt ! fopen()
-    kernel32 ! CreateFileW()
-        ntdll ! ZwCreateFile()
-            ntdll ! KiFastSystemCall()
-                SYSENTRY        // IA-32 Instruction
-                    ——> 进入内核模式
-```
-
-
-
-如上所示，使用常规系统资源的 API 会经由 kernel32.dll 与 ntdll.dll 不断向下调用，通过 SYSRNTRY 命令进入内核模式
-
-为了运行实际的应用程序代码，需要加载许多系统库（DLL）。
 
 所有进程都会默认加载 kernel32.dll库，kernel32.dll又会加载 ntdll.dll库。
 
-**注**某些特定的系统进程（如：smss.exe）
+**注**: 但是某些特定的系统进程（如：smss.exe）,不会加载 kernel32.dll库
 
-不会加载 kernel32.dll库。
+![image-20230911194156992](./img/image-20230911194156992.png)
+
+
 
 此外， GUI 应用程序中，user32.dll 与 gdi32.dll 是必须库。
 
-通过 API 钩取技术可以实现对某些 Win32 API 调用过程的拦截，并获得相应的控制权限。使用 API 钩取技术的优势如下：
+通过 API 钩取技术可以实现对某些 Win32 API 调用过程的拦截，并获得相应的控制权限。
+
+使用 API 钩取技术的优势如下：
 
 - 在 API 调用前/后运行用户的“钩子”代码。
 - 查看或操作传递给 API 的参数或 API 函数的返回时。
