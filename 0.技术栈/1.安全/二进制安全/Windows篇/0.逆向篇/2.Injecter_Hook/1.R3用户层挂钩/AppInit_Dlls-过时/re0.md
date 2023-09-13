@@ -1,6 +1,6 @@
 # AppInit_Dlls(不太行)
 
-
+这个技术作为了解,,可能是无法实现
 
 # 威力
 
@@ -18,7 +18,7 @@ user32.dll被加载到进程的时候,会读取App_Init_dlls注册表项, 如果
 
 所以,严格的来说,相应的dll不会加载到所有的进程
 
-而只是加载到user32.dll所在的进程
+而只是含有user32.dll的进程才会加载
 
 对于winXP而言,会忽略LoadAppinit_Dlls的注册表项
 
@@ -28,15 +28,23 @@ user32.dll被加载到进程的时候,会读取App_Init_dlls注册表项, 如果
 计算机\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows
 ```
 
-![Untitled](AppInit_Dlls(%E4%B8%8D%E5%A4%AA%E8%A1%8C)%20c4a2bba7bdd845ca8388532c988efb8b/Untitled.png)
+
+
+![image-20230913115112408](./img/image-20230913115112408.png)
+
+
 
 AppInit_Dlls注册表 功能很强大,通过它可以向任何进程注入dll文件
 
 如果注入的dll有问题,那么可能导致所有的windwos进程无法正常启动
 
-![Untitled](AppInit_Dlls(%E4%B8%8D%E5%A4%AA%E8%A1%8C)%20c4a2bba7bdd845ca8388532c988efb8b/Untitled%201.png)
+![image-20230913115136049](./img/image-20230913115136049.png)
+
+
 
 但是，在win7上屡试不爽，win10系统之后发现，注入方法失效
+
+所以说过时了呢
 
 # 后来的状况
 
