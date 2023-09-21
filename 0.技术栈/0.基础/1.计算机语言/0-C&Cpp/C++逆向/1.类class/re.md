@@ -897,7 +897,9 @@ Box3 = tmp;
 
 虚函数...
 
-什么是虚函数,,,通过例子就会了解到的
+什么是虚函数,,,通过例子就会了解到到虚函数 
+
+
 
 
 
@@ -1302,4 +1304,131 @@ vftable[1]是`int fecho()`,子类并没有发起重写
 
 纯虚函数不同于虚函数不同的是
 
-虚函数它并要求子类一点它完成对他的才答应
+虚函数它并不要求子类对它完一个重写
+
+并且子类可以调用父类的虚函数
+
+
+
+而纯虚函数的话,,在父类中,它没有具体的实现,,只有一个声明
+
+然后要求子类必须对他完成一个重写
+
+
+
+### purecall分析
+
+分析代码如下
+
+
+
+```c++
+#include <iostream> 
+using namespace std;
+
+class Shape {
+protected:
+    int width, height;
+public:
+    Shape(int a = 0, int b = 0)
+    {
+        width = a;
+        height = b;
+    }
+    // pure virtual function
+    virtual int area() = 0;
+};
+class Rectangle : public Shape {
+public:
+    Rectangle(int a = 0, int b = 0) :Shape(a, b) { }
+    int area()
+    {
+        cout << "s1" << endl;
+        return (width * height);
+    }
+    int fecho2() {
+        printf("x\n");
+        return 0;
+    }
+};
+ 
+// 程序的主函数
+int main()
+{
+    Shape* shape;
+    Rectangle *rec=new Rectangle(10, 7);
+    
+
+   
+    shape = rec;
+    shape->area();
+    rec->area();
+   
+    return 0;
+}
+```
+
+
+
+
+
+
+
+这是父类默认的一个虚函数表
+
+应该是吧
+
+首先看一下函数的翻译
+
+![image-20230919105515502](./img/image-20230919105515502.png)
+
+然后进入函数看看,,有什么东西
+
+然乎看一下流程图
+
+![image-20230919105634256](./img/image-20230919105634256.png)
+
+关于sub_484863()函数
+
+我们分析分析
+
+![image-20230919105654785](./img/image-20230919105654785.png)
+
+然后继续跟进
+
+![image-20230919105723710](./img/image-20230919105723710.png)
+
+再次跟进
+
+![image-20230919105743544](./img/image-20230919105743544.png)
+
+好了,,,其实分析一会,,就会发现函数sub_585864()干的事情就是
+
+把一个全局的数值给ecx,然后eax=ecx,作为返回
+
+根据返回值,,他就开始做一个跳转
+
+![image-20230919105906159](./img/image-20230919105906159.png)
+
+如果返回值是0,那么就是直接abort
+
+如果返回值不是0,,那么我们进入`ds:___guard_check_icall_fptr`看看
+
+它干的事情其实也很抽象
+
+![image-20230919110045087](./img/image-20230919110045087.png)
+
+那就对栈里面写入一个ecx
+
+然后返回
+
+![image-20230919110132368](./img/image-20230919110132368.png)
+
+然会调用栈里面的函数指针.....
+
+所以也就是说 call [ecx]
+
+再说到底, 其实就是 purecall干的事情就算 `CALL DWORD PTR [全局变量的地址]`
+
+
+

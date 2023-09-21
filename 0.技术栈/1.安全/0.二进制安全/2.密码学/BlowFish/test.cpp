@@ -5,7 +5,7 @@
 #define unsigned char byte
 
 //blow的密钥长度为动态的  64bit - 448bit
-//blowfish有两个盒 unsigned long pbox[18] 和 unsigned long sbox[4][256] 总计是4168个字节 
+//blowfish有两个盒 unsigned long pbox[18] 和 unsigned long sbox[4][256] 总计是4168个字节
 
 /*
 算法流程如下
