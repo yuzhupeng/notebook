@@ -3,13 +3,7 @@
 - 🐱‍💻 ID: 香香 && redqx
 - 🌏 出生地: D0g3.21.Reverse
 - 💬 QQ/Wechat: 935797872
-- 🚩 F1ag: 道之若极,行必有格
-- 📙 日记: https://redqx.github.io/
-- 📚 笔记: https://github.com/redqx/NoteBook/blob/master/README.md
-
-- *昨夜西风凋碧树，独上高楼，望尽天涯路*
-- *衣带渐宽终不悔，为伊消得人憔悴*
-- *众里寻他千百度,蓦然回首,那人却在灯火阑珊处*
+- 🚩 F1ag: 道之若极,行必有格 
 
 
 

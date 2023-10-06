@@ -1,4 +1,6 @@
-# Linux配置问题
+
+
+
 
 # IDA动态调试问题
 
@@ -82,3 +84,40 @@ chsh -s /bin/bash
     
 
 现在，您应该已经成功打开了Ubuntu上的8080端口。请注意，如果您正在运行其他安全软件或服务，它们可能会干扰端口的访问。确保您的网络配置和其他防火墙规则不会阻止对8080端口的访问。
+
+
+
+
+
+# fsearch安装
+
+
+
+```
+echo 'deb http://download.opensuse.org/repositories/home:/manuelschneid3r/xUbuntu_20.04/ /' | sudo tee /etc/apt/sources.list.d/home:manuelschneid3r.list
+curl -fsSL https://download.opensuse.org/repositories/home:manuelschneid3r/xUbuntu_20.04/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_manuelschneid3r.gpg > /dev/null
+sudo apt update
+sudo apt install albert
+```
+
+
+
+
+
+# 编译x86
+
+安装
+
+```
+sudo apt-get install build-essential module-assistant  
+sudo apt-get install gcc-multilib g++-multilib  
+```
+
+
+
+编译链接
+
+```
+gcc -m32  -o main.elf  
+```
+
