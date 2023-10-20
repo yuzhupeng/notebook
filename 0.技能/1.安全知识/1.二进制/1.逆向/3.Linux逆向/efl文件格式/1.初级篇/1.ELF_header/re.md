@@ -64,9 +64,17 @@ ULONGLONG e_shoff;
 
 # 结构体成员
 
+
+
 ## e_ident
 
+它的作用是什么?
 
+用于解码和解析文件内容的数据，
+
+如果不知道编码格式，系统将无法知道怎么去读取目标文件
+
+是不依赖于具体操作系统的执行什么的
 
 
 
@@ -82,8 +90,8 @@ typedef struct
   Elf64_Half	e_machine;	    /* Architecture */
   Elf64_Word	e_version;	    /* Object file version */               // 4 bytes
   Elf64_Addr	e_entry;	    /* Entry point virtual address */       // 8 bytes
-  Elf64_Off	e_phoff;	    /* Program header table file offset */  // 8 bytes
-  Elf64_Off	e_shoff;	    /* Section header table file offset */      
+  Elf64_Off		e_phoff;	    /* Program header table file offset */  // 8 bytes
+  Elf64_Off		e_shoff;	    /* Section header table file offset */      
   Elf64_Word	e_flags;	    /* Processor-specific flags */             
   Elf64_Half	e_ehsize;	    /* ELF header size in bytes */
   Elf64_Half	e_phentsize;	    /* Program header table entry size */
@@ -113,13 +121,7 @@ typedef struct
 
 
 
-所以它的作用是什么?
-
-用于解码和解析文件内容的数据，
-
-如果不知道编码格式，系统将无法知道怎么去读取目标文件
-
-是不依赖于具体操作系统的执行什么的
+ 
 
 
 
@@ -194,7 +196,7 @@ ELF的文件类型，定义如下：
 ```text
 #define  ET_REL    1 //可重定位文 件（如目标文件）
 #define  ET_EXEC   2 // 可执行文件（可直接执行的文件）
-#define  ET_DYN    3 //共享目标文件（如SO库）
+#define  ET_DYN    3 // 共享目标文件（如SO库）
 #define  ET_CORE   4 //Core文件（吐核文件）
 ```
 

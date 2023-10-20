@@ -875,10 +875,40 @@ public class MainActivity extends AppCompatActivity {
 
  
 
-### ImageButton
+## ImageButton
 
 
 
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
+    <ImageButton
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:src="@drawable/demo1"
+        android:scaleType="fitCenter"/>
+
+</LinearLayout>
+```
+
+
+
+![image-20231013222539248](img/image-20231013222539248.png)
 
   
+
+
+
+
+
+## 实践: 计算器
+
+
+
+![image-20231013223243712](img/image-20231013223243712.png)

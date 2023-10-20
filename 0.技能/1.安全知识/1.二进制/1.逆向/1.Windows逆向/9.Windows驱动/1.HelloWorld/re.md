@@ -2,7 +2,7 @@
 
 
 
-# 2019-环境配置+项目创建和生成-Win7
+# vs2019/17+wdk10
 
 环境配置:
 
@@ -166,7 +166,11 @@ debugView就出现了消息
 
 
 
-# 2013 -环境配置+项目创建和生成-Xp
+# vs2013+wdk8.1
+
+先安装vs2013,然后安装wdk8.1
+
+
 
 和之前的大体相同
 
@@ -187,8 +191,8 @@ void my_unload(PDRIVER_OBJECT xx)
     DbgPrint("Good Bye rdqx\n");
 }
 NTSTATUS  DriverEntry(
-    PDRIVER_OBJECT driver,
-    PUNICODE_STRING reg_path
+    PDRIVER_OBJECT driver,//就像是dll加载的时候会返回一个dllbase,driver指向了一个结构体	
+    PUNICODE_STRING reg_path//你的驱动被注册在哪一个路径之下
 )
 {
     driver->DriverUnload = my_unload;//安全卸载函数
@@ -254,3 +258,126 @@ NTSTATUS  DriverEntry(
 可以看到输出
 
 ![image-20230922132734553](./img/image-20230922132734553.png)
+
+
+
+
+
+
+
+# WDF和WDM有什么区别
+
+驱动分为2种,一种是NT的,一种是WDM的
+
+NT: 较早的,一些ntddk.h都是基于nt的驱动, 属于冷插拔,,,比如插入一个鼠标的NT驱动,,需要重启才可以使用
+
+WDM: 热插拔,即插即用
+
+
+
+不管哪一种,,,和我们搞安全都无所谓...
+
+真的无所谓?....
+
+
+
+![image-20231019104723562](img/image-20231019104723562.png)
+
+在我们的电脑卡死的时候,,长按电源键
+
+会发起了中断请求,,,因为该中断请求属于最高等级
+
+尽管我们电脑卡死了,,,但是我们仍然可以关机
+
+
+
+在KPCR.Irql   中,就存放了我们的请求等级
+
+```
+0: kd> dt _KPCR
+nt!_KPCR
+   +0x000 NtTib            : _NT_TIB
+   +0x01c SelfPcr          : Ptr32 _KPCR
+   +0x020 Prcb             : Ptr32 _KPRCB
+   +0x024 Irql             : UChar
+   +0x028 IRR              : Uint4B
+   +0x02c IrrActive        : Uint4B
+   +0x030 IDR              : Uint4B
+   +0x034 KdVersionBlock   : Ptr32 Void
+   +0x038 IDT              : Ptr32 _KIDTENTRY
+   +0x03c GDT              : Ptr32 _KGDTENTRY
+   +0x040 TSS              : Ptr32 _KTSS
+   +0x044 MajorVersion     : Uint2B
+   +0x046 MinorVersion     : Uint2B
+   +0x048 SetMember        : Uint4B
+   +0x04c StallScaleFactor : Uint4B
+   +0x050 DebugActive      : UChar
+   +0x051 Number           : UChar
+   +0x052 Spare0           : UChar
+   +0x053 SecondLevelCacheAssociativity : UChar
+   +0x054 VdmAlert         : Uint4B
+   +0x058 KernelReserved   : [14] Uint4B
+   +0x090 SecondLevelCacheSize : Uint4B
+   +0x094 HalReserved      : [16] Uint4B
+   +0x0d4 InterruptMode    : Uint4B
+   +0x0d8 Spare1           : UChar
+   +0x0dc KernelReserved2  : [17] Uint4B
+   +0x120 PrcbData         : _KPRCB
+
+```
+
+
+
+
+
+# Hello World
+
+
+
+```c
+#include<ntddk.h>
+void my_unload(PDRIVER_OBJECT xx)
+{
+    DbgPrint("Good Bye rdqx\n");
+}
+NTSTATUS  DriverEntry(
+    PDRIVER_OBJECT driver,//就像是dll加载的时候会返回一个dllbase,driver指向了一个结构体	
+    PUNICODE_STRING reg_path//你的驱动被注册在哪一个路径之下
+)
+{
+    driver->DriverUnload = my_unload;//安全卸载函数
+	DbgPrint("redqx: %wZ\n", reg_path);
+	DbgPrint("p_driver: %X\n", p_driver);
+	return STATUS_SUCCESS;
+}
+```
+
+ 
+
+![image-20231019121438150](img/image-20231019121438150.png)
+
+![image-20231019121456321](img/image-20231019121456321.png)
+
+然后去看看那个结构体
+
+```
+0: kd> dt _DRIVER_OBJECT 89EB3030
+ntdll!_DRIVER_OBJECT
+   +0x000 Type             : 0n4
+   +0x002 Size             : 0n168
+   +0x004 DeviceObject     : (null) 
+   +0x008 Flags            : 0x12
+   +0x00c DriverStart      : 0xbabf8000 Void
+   +0x010 DriverSize       : 0x6000
+   +0x014 DriverSection    : 0x89b22df8 Void
+   +0x018 DriverExtension  : 0x89eb30d8 _DRIVER_EXTENSION
+   +0x01c DriverName       : _UNICODE_STRING "\Driver\MyDriver3"
+   +0x024 HardwareDatabase : 0x8067e260 _UNICODE_STRING "\REGISTRY\MACHINE\HARDWARE\DESCRIPTION\SYSTEM"
+   +0x028 FastIoDispatch   : (null) 
+   +0x02c DriverInit       : 0xbabfc000     long  MyDriver3!GsDriverEntry+0
+   +0x030 DriverStartIo    : (null) 
+   +0x034 DriverUnload     : 0xbabf9040     void  MyDriver3!Driver_UnLoad+0
+   +0x038 MajorFunction    : [28] 0x804f5552     long  nt!IopInvalidDeviceRequest+0
+
+```
+
